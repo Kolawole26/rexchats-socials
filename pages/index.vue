@@ -15,7 +15,7 @@ const { user } = storeToRefs(userDetailsStore);
 
 
 onMounted(() => {
-  console.log(">>>>>>", user.value);
+  console.log(">>>>>>.", user.value);
 });
 
 
