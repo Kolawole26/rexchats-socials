@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="flex flex-col gap-1 font-inter">
     <!-- Label -->
     <label
@@ -32,11 +32,11 @@
       :placeholder="placeholder"
       autoResize
       rows="5"
-      class="border px-3 py-2 text-sm focus:outline-none"
+      class="border px-3 py-2 body-small focus:outline-none"
       :disabled="disabled"
       :class="{ 'p-invalid': error }"
       style="box-shadow: 0px 1px 2px 0px #1018280d"
-      :pt="{ root: { style: 'font-size: 0.875rem; color: #97989A;' } }"
+      
       @update:modelValue="emitChange"
     />
 
@@ -83,7 +83,7 @@
     <!-- Error Message -->
     <span
       v-if="error"
-      class="text-danger-300 mt-1 text-xs"
+      class="text-danger-300 mt-1 body-xsmall"
     >
       {{ error }}
     </span>
@@ -116,4 +116,5 @@ const emitChange = (val) => {
   emit('update:modelValue', val)
 }
 </script>
+
 

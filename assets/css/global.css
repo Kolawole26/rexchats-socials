@@ -1,330 +1,249 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'Geist', sans-serif;
-  /* overflow-y: scroll !important; */
-}
-body {
-  @apply text-neutral-500;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Typography styles using Tailwind CSS */
+body {
+  @apply text-neutral-primary;
+}
+
+/* Typography */
 
 h1 {
-    @apply lg:text-[48px] md:text-[36px] text-[32px] font-extrabold leading-[120%];
-  }
-  
-  h2 {
-    @apply lg:text-[32px] md:text-[28px] text-[24px] font-bold leading-[125%];
-  }
-  
-  h3 {
-    @apply lg:text-[24px] md:text-[22px] text-[20px] font-semibold leading-[120%];
-  }
-  
-  h4 {
-    @apply lg:text-[20px] md:text-[18px] text-[16px] font-medium leading-[120%];
-  }
-  
-  h5 {
-    @apply lg:text-[18px] md:text-[16px] text-[14px] font-semibold leading-[120%];
-  }
-  
-  /* Body Text */
-  .body-large {
-    @apply lg:text-[20px] md:text-[18px] text-[18px] font-normal leading-[150%];
-  }
-  
-  .body-regular {
-    @apply lg:text-[16px] md:text-[16px] text-[16px] font-normal leading-[150%];
-  }
-  
-  .body-small {
-    @apply text-[14px] font-normal leading-[140%];
-  }
-  
-  .body-xsmall {
-    @apply text-[12px] font-normal leading-[140%];
-  }
-  
-  /* Buttons & Labels */
-  .button {
-    @apply text-[14px] font-medium leading-[140%];
-  }
-  
-  .label {
-    @apply lg:text-[14px] md:text-[12px] text-[12px] font-medium leading-[120%];
-  }
+  @apply lg:text-[48px] md:text-[36px] text-[32px] font-extrabold leading-[120%];
+}
 
-  .custom-otp-input {
-    @apply sm:w-[51px] w-10 py-1 text-2xl appearance-none text-center transition-all duration-200 rounded-[8px] bg-neutral-20;
-  }
-  
-  .custom-otp-input:focus {
-    @apply outline-none border-primary-300;
-  }
-  
-  .p-iconfield .p-inputicon {
-    @apply !text-neutral-200;
-  }
-  .p-iconfield .p-inputtext {
-    @apply !w-full py-2 !rounded-lg border-neutral-100;
-  }
-  .p-iconfield .p-inputtext::placeholder {
-    @apply body-small text-neutral-200;
-  }
-  
-  .own-filter .p-select {
-    height: 48px;
-    flex-direction: row-reverse;
-    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05) !important;
-    border-radius: 8px;
-    padding: 0 3px;
-  }
-  .own-filter .p-select .p-inputtext {
-    line-height: 1rem;
-    border: none !important;
-    background: none !important;
-    font-size: 14px;
-  }
-  .own-filter .p-select .p-dropdown-trigger {
-    width: 16px;
-  }
-  .own-filter .p-select .p-placeholder {
-    @apply font-normal text-neutral-200 text-sm;
-  }
-  
-  .own-filter .p-select-label {
-    @apply !pr-[7px];
-  }
-  
-  .p-popover-content {
-    @apply !p-0;
-  }
-  .p-textarea{
-    @apply border-none bg-neutral-30 text-neutral-500 !important;
-  }
-  
-  .p-tag {
-    @apply !border !rounded-lg !text-xs !font-normal;
-  }
+h2 {
+  @apply lg:text-[32px] md:text-[28px] text-[24px] font-bold leading-[125%];
+}
 
-     /* Input Field Styles */
+h3 {
+  @apply lg:text-[24px] md:text-[22px] text-[20px] font-semibold leading-[120%];
+}
 
-     .p-textarea:enabled:hover {
-        border-color: transparent !important;
-      }
-      .p-inputtext {
-        border-radius: 100px !important;
-        border-color: transparent !important;
-        background: #FAFAFA !important;
-        color: #121212 !important;
-        font-size: 14px !important;
-        font-weight: 500;
-      }
-      
-      .dark {
-        .p-inputtext {
-          border-color: transparent !important;
-          background: #2A2A2A !important;
-          color: #ffffff !important;
-        }
-      }
-      .p-inputtext::placeholder {
-        color: #97989A !important;
-        font-size: 14px;
-        font-weight: 500;
-      }
-      .p-password .p-inputtext {
-        width: 100% !important;
-      }
-    
-        /* Select Field Styles */
-      
-      .p-select-label {
-        margin-top: auto;
-        margin-bottom: auto;
-      }
-      
-      .p-placeholder {
-        color: #97989A !important;
-        font-size: 14px;
-        font-weight: 500;
-      }
-      
-      .p-select {
-        border-radius: 100px !important;
-        border-color: transparent !important;
-        background: #FAFAFA !important;
-        box-shadow: none !important;
-        font-size: 14px !important;
-        .p-select-label {
-          padding: 0 !important;
-          /* color: #121212 !important; */
-          font-weight: 500;
-        }
-        &::placeholder {
-          color: #97989A !important;
-        }
-      }
-      
-      .dark {
-        .p-select {
-          border-color: transparent !important;
-          background: #2A2A2A !important;
-          color: #ffffff !important;
-        }
-      }
-      
-      
-      .p-select-list {
-        font-size: 14px;
-      }
-      
-      .p-datepicker .p-inputtext::placeholder {
-        color: #97989A !important;
-        font-size: 14px;
-      }
+h4 {
+  @apply lg:text-[18px] md:text-[18px] text-[16px] font-medium leading-[120%];
+}
 
-          .filter .p-select .p-placeholder {
-    @apply font-normal text-neutral-200 text-xs;
-  }
+h5 {
+  @apply lg:text-[16px] md:text-[16px] text-[14px] font-semibold leading-[120%];
+}
 
-   .filter .p-datepicker .p-inputtext::placeholder {
-    color: #97989A !important;
-    font-size: 12px;
-  }
-  
-  @media screen and (min-width: 640px) {
-    .p-paginator-current {
-      flex: auto;
-      margin: auto;
-      display: inline-flex;
-      justify-content: flex-start;
-    }
-  }
 
-     /* Table Styles */
-  
-  .th-center {
-    .p-datatable-column-header-content {
-      justify-content: center;
-    }
-  }
-  
-  .dark {
-    .p-datatable-thead tr th {
-      background: #323942 !important;
-      color: white;
-    }
-  
-    .p-datatable-tbody tr {
-      background: transparent;
-      border-bottom: 1px solid #bfbfbf33 !important;
-      border-top: 1px solid #bfbfbf33 !important;
-  
-      &:hover {
-        background: #bfbfbf33 !important;
-      }
-    }
-  }
-  
-  .custom-modal {
-    margin: 0 !important;
-    border: none !important;
-    .p-dialog-content {
-      border-radius: 20px;
-      padding: 0;
-    }
-  }
-  
-  .custom-modal-drawer {
-    border: none !important;
-    .p-dialog-content {
-      @apply p-0 !rounded-none;
-    }
-  }
-  
-  
-  .p-datatable-thead tr th {
-    background: #fafafa !important;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 13px 24px !important;
-    border-bottom: 0.6px solid #bfbfbf66;
-    text-wrap: nowrap;
-    color: #080a09;
-  }
-  
-  .p-datatable-thead tr {
-    border-bottom: 1px solid #eaecf0;
-  }
-  
-  .p-datatable-tbody tr {
-    border-bottom: 1px solid #eaecf0;
-    border-top: 1px solid #eaecf0;
-  
-    td {
-      padding: 13px 24px !important;
-    }
-  
-    &:hover {
-      background: #f8f8fc;
-    }
-  }
-  
-  .p-datatable .p-datatable-footer {
-    border: none !important;
-    background-color: white;
-    min-height: 50px;
-  }
-  
-  .p-datatable .p-datatable-footer {
-    @apply dark:bg-neutral-10;
-  }
-  
-  .p-paginator-bottom {
-    border: none;
-    margin-top: 20px;
-  }
-  
-  .p-paginator {
-    background: transparent;
-  
-    border: none;
-  }
-  
-  .p-paginator-first .p-icon {
-    @apply text-secondary-300;
-  }
-  
-  .p-paginator-last .p-icon {
-    @apply text-secondary-300;
-  }
-  
-  .p-paginator-prev .p-icon {
-    @apply text-secondary-300;
-  }
-  .p-paginator-next .p-icon {
-    @apply text-secondary-300;
-  }
-  .p-paginator .p-select  {
-    @apply !h-10;
-  }
-  
-  .p-drawer-header {
-    @apply !hidden;
-  }
-  
-  .p-drawer-content {
-    @apply !p-0;
-  }
-  
-  .p-toast {
-    @apply !w-[88%] sm:!w-[40%] xl:!w-[28%]
-  }
-  
+
+/* Body Text */
+
+.body-large {
+  @apply lg:text-[20px] md:text-[18px] text-[18px] font-normal leading-[150%];
+}
+
+.body-regular {
+  @apply text-[16px] font-normal leading-[150%];
+}
+
+.body-small {
+  @apply text-[14px] font-normal leading-[140%];
+}
+
+.body-xsmall {
+  @apply text-[12px] font-normal leading-[140%];
+}
+
+/* Buttons */
+
+.button {
+  @apply text-[14px] font-medium leading-[140%];
+}
+
+.label {
+  @apply text-[14px] font-medium leading-[140%];
+}
+
+/* OTP */
+
+.custom-otp-input {
+  @apply sm:w-[51px] w-10 py-1 text-2xl appearance-none text-center transition-all duration-200 rounded-[8px] bg-neutral-muted;
+}
+
+.custom-otp-input:focus {
+  @apply outline-none border-primary-300;
+}
+
+/* PrimeVue */
+
+.p-iconfield .p-inputicon {
+  @apply !text-neutral-secondary;
+}
+
+.p-iconfield .p-inputtext {
+  @apply !w-full py-2 !rounded-lg border-neutral-line;
+}
+
+.p-iconfield .p-inputtext::placeholder {
+  @apply body-small text-neutral-secondary;
+}
+
+/* Filters */
+
+.own-filter .p-select {
+  height: 48px;
+  flex-direction: row-reverse;
+  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05) !important;
+  border-radius: 8px;
+  padding: 0 3px;
+}
+
+.own-filter .p-select .p-inputtext {
+  line-height: 1rem;
+  border: none !important;
+  background: none !important;
+  font-size: 14px;
+}
+
+.own-filter .p-select .p-dropdown-trigger {
+  width: 16px;
+}
+
+.own-filter .p-select .p-placeholder {
+  @apply font-normal text-neutral-secondary text-sm;
+}
+
+.own-filter .p-select-label {
+  @apply !pr-[7px];
+}
+
+.p-popover-content {
+  @apply !p-0;
+}
+
+.p-textarea {
+  @apply border-none bg-neutral-muted text-neutral-primary !important;
+}
+
+/* Tags */
+
+.p-tag {
+  @apply !border !rounded-lg !text-xs !font-normal border-neutral-line;
+}
+
+/* Input */
+
+.p-inputtext {
+  border-radius: 8px !important;
+  border-color: var(--neutral-line) !important;
+  background: var(--neutral-surface) !important;
+  color: var(--neutral-primary) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+
+.dark .p-inputtext {
+  background: #2A2A2A !important;
+  color: #ffffff !important;
+}
+
+.p-inputtext::placeholder {
+  color: var(--neutral-secondary) !important;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.p-password .p-inputtext {
+  width: 100% !important;
+}
+
+/* Select */
+
+.p-placeholder {
+  color: var(--neutral-secondary) !important;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.p-select {
+  border-radius: 8px !important;
+  border-color: var(--neutral-line) !important;
+  background: var(--neutral-surface) !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+}
+
+.dark .p-select {
+  background: #2A2A2A !important;
+  color: #ffffff !important;
+}
+
+/* Table */
+
+.p-datatable-thead tr th {
+  background: var(--neutral-background) !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 24px !important;
+  border-bottom: 1px solid var(--neutral-line);
+  color: var(--neutral-secondary);
+}
+
+.p-datatable-tbody tr {
+  border-bottom: 1px solid var(--neutral-line);
+  border-top: 1px solid var(--neutral-line);
+}
+
+.p-datatable-tbody tr:hover {
+  background: var(--neutral-muted);
+}
+
+.p-datatable .p-datatable-footer {
+  border: none !important;
+  background-color: var(--neutral-surface);
+}
+
+.p-datatable .p-datatable-footer {
+  @apply dark:bg-neutral-surface;
+}
+
+/* Pagination */
+
+.p-paginator {
+  background: transparent;
+  border: none;
+}
+
+.p-paginator-first .p-icon,
+.p-paginator-last .p-icon,
+.p-paginator-prev .p-icon,
+.p-paginator-next .p-icon {
+  @apply text-primary-100;
+}
+
+
+.p-paginator-page {
+  @apply !text-neutral-primary;
+}
+.p-paginator-content button {
+  @apply !text-neutral-primary;
+}
+.p-paginator-page.p-paginator-page-selected {
+  @apply !bg-primary-300 !text-neutral-inverted;
+}
+
+/* Drawer */
+
+.p-drawer-header {
+  @apply !hidden;
+}
+
+.p-drawer-content {
+  @apply !p-0;
+}
+
+/* Toast */
+
+.p-toast {
+  @apply !w-[88%] sm:!w-[40%] xl:!w-[28%];
+}

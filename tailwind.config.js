@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "class", // Enable dark mode support
+  darkMode: "class",
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -9,9 +9,33 @@ module.exports = {
     "./app.vue",
     "./error.vue",
   ],
+
   theme: {
     extend: {
       colors: {
+
+        /* =========================
+           NEUTRAL
+        ========================= */
+
+        neutral: {
+          background: "var(--neutral-background)",
+          surface: "var(--neutral-surface)",
+          muted: "var(--neutral-muted)",
+          line: "var(--neutral-line)",
+
+          primary: "var(--neutral-primary)",
+          secondary: "var(--neutral-secondary)",
+          tertiary: "var(--neutral-tertiary)",
+          inverted: "var(--neutral-inverted)",
+        },
+
+
+
+        /* =========================
+           PRIMARY
+        ========================= */
+
         primary: {
           50: "var(--primary-50)",
           75: "var(--primary-75)",
@@ -21,25 +45,13 @@ module.exports = {
           400: "var(--primary-400)",
           500: "var(--primary-500)",
         },
-        secondary: {
-          50: "var(--secondary-50)",
-          75: "var(--secondary-75)",
-          100: "var(--secondary-100)",
-          200: "var(--secondary-200)",
-          300: "var(--secondary-300)",
-          400: "var(--secondary-400)",
-          500: "var(--secondary-500)",
-        },
-        neutral: {
-          10: "var(--neutral-10)",
-          20: "var(--neutral-20)",
-          30: "var(--neutral-30)",
-          50: "var(--neutral-50)",
-          100: "var(--neutral-100)",
-          200: "var(--neutral-200)",
-          300: "var(--neutral-300)",
-          500: "var(--neutral-500)",
-        },
+
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
         success: {
           50: "var(--success-50)",
           75: "var(--success-75)",
@@ -49,6 +61,13 @@ module.exports = {
           400: "var(--success-400)",
           500: "var(--success-500)",
         },
+
+
+
+        /* =========================
+           DANGER
+        ========================= */
+
         danger: {
           50: "var(--danger-50)",
           75: "var(--danger-75)",
@@ -58,6 +77,13 @@ module.exports = {
           400: "var(--danger-400)",
           500: "var(--danger-500)",
         },
+
+
+
+        /* =========================
+           WARNING
+        ========================= */
+
         warning: {
           50: "var(--warning-50)",
           75: "var(--warning-75)",
@@ -67,6 +93,13 @@ module.exports = {
           400: "var(--warning-400)",
           500: "var(--warning-500)",
         },
+
+
+
+        /* =========================
+           INFO
+        ========================= */
+
         info: {
           50: "var(--info-50)",
           75: "var(--info-75)",
@@ -76,12 +109,63 @@ module.exports = {
           400: "var(--info-400)",
           500: "var(--info-500)",
         },
+
+
+
+        /* =========================
+           BRAND / ACCENT
+        ========================= */
+
+        brand: {
+          indigo: {
+            background: "var(--brand-indigo-background)",
+            foreground: "var(--brand-indigo-foreground)",
+          },
+
+          blue: {
+            background: "var(--brand-blue-background)",
+            foreground: "var(--brand-blue-foreground)",
+          },
+
+          purple: {
+            background: "var(--brand-purple-background)",
+            foreground: "var(--brand-purple-foreground)",
+          },
+
+          pink: {
+            background: "var(--brand-pink-background)",
+            foreground: "var(--brand-pink-foreground)",
+          },
+
+          red: {
+            background: "var(--brand-red-background)",
+            foreground: "var(--brand-red-foreground)",
+          },
+
+          moss: {
+            background: "var(--brand-moss-background)",
+            foreground: "var(--brand-moss-foreground)",
+          },
+
+          monostone: {
+            background: "var(--brand-monostone-background)",
+            foreground: "var(--brand-monostone-foreground)",
+          },
+
+          magenta: {
+            background: "var(--brand-magenta-background)",
+            foreground: "var(--brand-magenta-foreground)",
+          },
+        },
       },
-        fontFamily: {
-        geist: ["Geist", "sans-serif"],
+
+
+
+      fontFamily: {
+        plusJakartaSans: ["Plus Jakarta Sans", "sans-serif"],
       },
     },
   },
+
   plugins: [],
 };
-

@@ -1,31 +1,32 @@
-<template>
-  <div class="min-h-screen flex bg-neutral-20 text-neutral-500 overflow-hidden">
+﻿<template>
+  <div class="min-h-screen flex bg-neutral-background text-neutral-primary overflow-hidden">
     <!-- Sidebar -->
     <div
       id="app-sidebar"
-      class="w-[18rem] bg-neutral-10 dark:bg-neutral-10 fixed lg:fixed top-0 left-0 z-50 lg:z-auto transition-transform duration-300 ease-in-out"
-      :class="{
-        'translate-x-0 overflow-y-auto': isSidebarOpen,
-        '-translate-x-full lg:translate-x-0 overflow-y-auto': !isSidebarOpen
-      }"
+      class="fixed top-0 left-0 h-full z-50 lg:z-auto bg-neutral-surface transition-all duration-300 ease-in-out"
+      :class="sidebarContainerClass"
     >
-      <div class="">
-        <PartialsTheSidebar @close-sidebar="isSidebarOpen = false" />
-      </div>
+      <PartialsTheSidebar
+        :collapsed="isSidebarCollapsed"
+        @close-sidebar="isSidebarOpen = false"
+        @toggle-collapse="toggleCollapse"
+      />
     </div>
 
-        <!-- Mobile Overlay -->
-        <div 
-      v-if="isSidebarOpen" 
-      class="fixed inset-0 bg-neutral-500 bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
+    <!-- Mobile Overlay -->
+    <div
+      v-if="isSidebarOpen"
+      class="fixed inset-0 bg-neutral-primary/40 z-40 lg:hidden transition-opacity duration-300"
       @click="isSidebarOpen = false"
-    ></div>
+    />
 
     <!-- Main Content Area -->
-    <div class="min-h-screen flex flex-col flex-auto relative lg:ml-[18rem]">
-      <!-- Header -->
+    <div
+      class="min-h-screen flex flex-col flex-auto relative transition-all duration-300"
+      :class="contentOffsetClass"
+    >
       <PartialsTheHeader
-      :customProp="customProp"
+        :customProp="customProp"
         :prevNavProp="prevNavProp"
         :prevNavLink="prevNavLink"
         :currentPrevProp="currentPrevProp"
@@ -33,13 +34,12 @@
         @toggle-sidebar="toggleSidebar"
       />
 
-      <!-- Page Content -->
-      <div class="py-4 sm:px-4 flex flex-col flex-auto text-neutral-500">
-        <h4 class="font-semibold text-base ml-6 capitalize mb-2 lg:hidden">
+      <div class="py-4 sm:px-6 flex flex-col flex-auto">
+        <h4 class="font-semibold text-base ml-1 capitalize mb-2 lg:hidden">
           <NuxtLink
-            :to="prevNavLink ? `/${prevNavLink}` : `/${prevNavProp}`"
             v-if="prevNavProp"
-            class="text-neutral-200"
+            :to="prevNavLink ? '/' + prevNavLink : '/' + prevNavProp"
+            class="text-neutral-secondary"
           >
             {{ prevNavProp }} /
           </NuxtLink>
@@ -52,54 +52,81 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { computed, ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 
-const route = useRoute();
-const isSidebarOpen = ref(false);
+const isSidebarOpen = ref(false)
+const isSidebarCollapsed = ref(false)
 
-// Props from route meta
-const customProp = ref(route.meta.customProp);
-const prevNavProp = ref(route.meta.prevNavProp);
-const prevNavLink = ref(route.meta.prevNavLink);
-const currentPrevProp = ref(route.meta.currentPrevProp);
-const currentPrevLink = ref(route.meta.currentPrevLink);
+onMounted(() => {
+  if (!process.client) return
+  const saved = localStorage.getItem('sidebar-collapsed')
+  isSidebarCollapsed.value = saved === 'true'
+})
 
-// Watch for changes in route meta properties
+const sidebarContainerClass = computed(() => {
+  const widthClass = isSidebarCollapsed.value ? 'lg:w-20' : 'lg:w-72'
+  const mobileWidth = 'w-72'
+
+  return [
+    'border-r border-neutral-line',
+    mobileWidth,
+    widthClass,
+    isSidebarOpen.value ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+  ].join(' ')
+})
+
+const contentOffsetClass = computed(() => {
+  return isSidebarCollapsed.value ? 'lg:ml-20' : 'lg:ml-72'
+})
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
+
+const toggleCollapse = () => {
+  isSidebarCollapsed.value = !isSidebarCollapsed.value
+  if (process.client) {
+    localStorage.setItem('sidebar-collapsed', String(isSidebarCollapsed.value))
+  }
+}
+
+const customProp = ref(route.meta.customProp || '')
+const prevNavProp = ref(route.meta.prevNavProp || '')
+const prevNavLink = ref(route.meta.prevNavLink || '')
+const currentPrevProp = ref(route.meta.currentPrevProp || '')
+const currentPrevLink = ref(route.meta.currentPrevLink || '')
+
 watch(
   () => route.meta.customProp,
   (newValue) => {
-    customProp.value = newValue;
+    customProp.value = newValue || ''
   }
-);
+)
 watch(
   () => route.meta.prevNavProp,
   (newValue) => {
-    prevNavProp.value = newValue;
+    prevNavProp.value = newValue || ''
   }
-);
+)
 watch(
   () => route.meta.prevNavLink,
   (newValue) => {
-    prevNavLink.value = newValue;
+    prevNavLink.value = newValue || ''
   }
-);
+)
 watch(
   () => route.meta.currentPrevProp,
   (newValue) => {
-    currentPrevProp.value = newValue;
+    currentPrevProp.value = newValue || ''
   }
-);
+)
 watch(
   () => route.meta.currentPrevLink,
   (newValue) => {
-    currentPrevLink.value = newValue;
+    currentPrevLink.value = newValue || ''
   }
-);
-
-// Toggle Sidebar
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-};
+)
 </script>

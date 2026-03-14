@@ -1,169 +1,131 @@
-<template>
-    <div class="otp-input-container">
-      <div v-for="(digit, index) in otpArray" :key="index" class="otp-digit-container">
-        <input
-          ref="otpInputs"
-          type="tel"
-          maxlength="1"
-          pattern="[0-9]*"
-          inputmode="numeric"
-          v-model="otpArray[index]"
-          class="otp-digit-input"
-          :data-index="index"
-          placeholder=""
-          @input="handleInput(index)"
-          @keydown="handleKeyDown($event, index)"
-          @paste="handlePaste"
-          @focus="handleFocus"
-        />
-      </div>
+﻿<template>
+  <div class="flex items-center justify-center sm:gap-4 gap-2">
+    <div v-for="(digit, index) in otpArray" :key="index" class="w-12 sm:w-14">
+      <input
+        ref="otpInputs"
+        type="tel"
+        maxlength="1"
+        pattern="[0-9]*"
+        inputmode="numeric"
+        v-model="otpArray[index]"
+        class="w-full h-12 text-center text-2xl font-semibold rounded-lg border border-neutral-line bg-neutral-surface text-neutral-primary outline-none focus:border-primary-300"
+        :data-index="index"
+        placeholder=""
+        @input="handleInput(index)"
+        @keydown="handleKeyDown($event, index)"
+        @paste="handlePaste"
+        @focus="handleFocus"
+      />
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, computed, watch, onMounted } from 'vue';
-  
-  const props = defineProps({
-    length: {
-      type: Number,
-      default: 4
-    },
-    modelValue: {
-      type: String,
-      default: ''
-    }
-  });
-  
-  const emit = defineEmits(['update:modelValue']);
-  
-  const otpInputs = ref([]);
-  const otpArray = ref(Array(props.length).fill(''));
-  
-  // Watch for external modelValue changes
-  watch(() => props.modelValue, (newValue) => {
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+
+const props = defineProps({
+  length: {
+    type: Number,
+    default: 6
+  },
+  modelValue: {
+    type: String,
+    default: ''
+  }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const otpInputs = ref([])
+const otpArray = ref(Array(props.length).fill(''))
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
     if (newValue) {
-      const valueArray = newValue.toString().split('');
-      otpArray.value = Array(props.length).fill('').map((_, i) => valueArray[i] || '');
+      const valueArray = newValue.toString().split('')
+      otpArray.value = Array(props.length)
+        .fill('')
+        .map((_, i) => valueArray[i] || '')
     } else {
-      otpArray.value = Array(props.length).fill('');
+      otpArray.value = Array(props.length).fill('')
     }
-  }, { immediate: true });
-  
-  // Watch internal array for changes to emit
-  watch(otpArray, (newArray) => {
-    const joinedValue = newArray.join('');
-    emit('update:modelValue', joinedValue);
-  }, { deep: true });
-  
-  // Computed property to check if OTP is completed
-  const isCompleted = computed(() => {
-    return otpArray.value.every(digit => digit !== '') && otpArray.value.length === props.length;
-  });
-  
-  // Handle input in a field
-  const handleInput = (index) => {
-    // Only allow numbers
-    otpArray.value[index] = otpArray.value[index].replace(/[^0-9]/g, '');
-    
-    // Move to next input if current one has a value
-    if (otpArray.value[index] !== '' && index < props.length - 1) {
-      otpInputs.value[index + 1].focus();
-    }
-  };
-  
-  // Handle keydown events
-  const handleKeyDown = (event, index) => {
-    // Handle backspace
-    if (event.key === 'Backspace') {
-      if (otpArray.value[index] === '') {
-        // Current field is empty, move to previous field and select its content
-        if (index > 0) {
-          event.preventDefault();
-          otpInputs.value[index - 1].focus();
-          otpInputs.value[index - 1].select();
-        }
-      }
-    } 
-    // Handle left arrow key
-    else if (event.key === 'ArrowLeft') {
-      if (index > 0) {
-        event.preventDefault();
-        otpInputs.value[index - 1].focus();
-        otpInputs.value[index - 1].select();
-      }
-    } 
-    // Handle right arrow key
-    else if (event.key === 'ArrowRight') {
-      if (index < props.length - 1) {
-        event.preventDefault();
-        otpInputs.value[index + 1].focus();
-        otpInputs.value[index + 1].select();
-      }
-    }
-  };
-  
-  // Handle paste event
-  const handlePaste = (event) => {
-    event.preventDefault();
-    const pastedData = event.clipboardData.getData('text');
-    const pastedDigits = pastedData.replace(/\D/g, '').split('');
-    
-    for (let i = 0; i < props.length && i < pastedDigits.length; i++) {
-      otpArray.value[i] = pastedDigits[i];
-    }
-    
-    // Focus on the next empty input or the last one
-    const nextEmptyIndex = otpArray.value.findIndex(digit => digit === '');
-    if (nextEmptyIndex !== -1) {
-      otpInputs.value[nextEmptyIndex].focus();
-    } else {
-      otpInputs.value[props.length - 1].focus();
-    }
-  };
-  
-  // Handle focus event
-  const handleFocus = (event) => {
-    // Select the content when focused
-    event.target.select();
-  };
-  
-  // Focus on first input when mounted
-  onMounted(() => {
-    if (otpInputs.value.length && otpArray.value[0] === '') {
-      otpInputs.value[0].focus();
-    }
-  });
-  </script>
-  
-  <style scoped>
-.otp-input-container {
-  @apply flex items-center justify-between sm:gap-4 gap-2;
+  },
+  { immediate: true }
+)
+
+watch(
+  otpArray,
+  (newArray) => {
+    emit('update:modelValue', newArray.join(''))
+  },
+  { deep: true }
+)
+
+const isCompleted = computed(() => {
+  return otpArray.value.every((digit) => digit !== '') && otpArray.value.length === props.length
+})
+
+const handleInput = (index) => {
+  otpArray.value[index] = otpArray.value[index].replace(/[^0-9]/g, '')
+
+  if (otpArray.value[index] !== '' && index < props.length - 1) {
+    otpInputs.value[index + 1].focus()
+  }
 }
-  
-  .otp-digit-container {
-    flex: 1;
+
+const handleKeyDown = (event, index) => {
+  if (event.key === 'Backspace') {
+    if (otpArray.value[index] === '') {
+      if (index > 0) {
+        event.preventDefault()
+        otpInputs.value[index - 1].focus()
+        otpInputs.value[index - 1].select()
+      }
+    }
+  } else if (event.key === 'ArrowLeft') {
+    if (index > 0) {
+      event.preventDefault()
+      otpInputs.value[index - 1].focus()
+      otpInputs.value[index - 1].select()
+    }
+  } else if (event.key === 'ArrowRight') {
+    if (index < props.length - 1) {
+      event.preventDefault()
+      otpInputs.value[index + 1].focus()
+      otpInputs.value[index + 1].select()
+    }
   }
-  
-  .otp-digit-input {
-    width: 100%;
-    height: 50px;
-    text-align: center;
-    font-size: 24px;
-    border: 1px solid #D9D9DB;
-    border-radius: 8px;
-    background-color: transparent;
-    -moz-appearance: textfield;
-    box-sizing: border-box;
+}
+
+const handlePaste = (event) => {
+  event.preventDefault()
+
+  const pastedData = event.clipboardData.getData('text')
+  const pastedDigits = pastedData.replace(/[^0-9]/g, '').split('')
+
+  for (let i = 0; i < props.length && i < pastedDigits.length; i++) {
+    otpArray.value[i] = pastedDigits[i]
   }
-  
-  .otp-digit-input:focus {
-    border-color: #4534B8;
-    outline: none;
+
+  const nextEmptyIndex = otpArray.value.findIndex((digit) => digit === '')
+
+  if (nextEmptyIndex !== -1) {
+    otpInputs.value[nextEmptyIndex].focus()
+    return
   }
-  
-  .otp-digit-input::-webkit-inner-spin-button,
-  .otp-digit-input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+
+  otpInputs.value[props.length - 1].focus()
+}
+
+const handleFocus = (event) => {
+  event.target.select()
+}
+
+onMounted(() => {
+  if (otpInputs.value.length && otpArray.value[0] === '') {
+    otpInputs.value[0].focus()
   }
-  </style>
+})
+</script>
+

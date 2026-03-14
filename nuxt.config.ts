@@ -1,12 +1,24 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import {definePreset} from '@primevue/themes';
+import { definePreset } from '@primevue/themes';
 import Aura from '@primevue/themes/aura';
 import svgLoader from 'vite-svg-loader'
 
 const MyPreset = definePreset(Aura, {
-    semantic: {
-        primary: {}
+  semantic: {
+    primary: {
+      50: '{purple.50}',
+      100: '{purple.100}',
+      200: '{purple.200}',
+      300: '{purple.300}',
+      400: '{purple.400}',
+      500: '#520380',
+      600: '{purple.600}',
+      700: '{purple.700}',
+      800: '{purple.800}',
+      900: '{purple.900}',
+      950: '{purple.950}'
     }
+  }
 });
 
 export default defineNuxtConfig({
@@ -21,8 +33,8 @@ export default defineNuxtConfig({
   },
   css: [
     "~/assets/css/global.css",
-  "primeicons/primeicons.css",
-],
+    "primeicons/primeicons.css",
+  ],
   modules: [
     '@primevue/nuxt-module',
     '@pinia/nuxt',
@@ -33,11 +45,11 @@ export default defineNuxtConfig({
     plugins: [svgLoader()],
   },
   primevue: {
-      options: {
-    theme: {
+    options: {
+      theme: {
         preset: MyPreset,
         options: {
-            darkModeSelector: '.dark'
+          darkModeSelector: '.dark'
         }
       }
     }
@@ -45,13 +57,13 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-    BASE_URL: process.env.BASE_URL || 'https://api.example.com',
-    env: process.env.NUXT_PUBLIC_ENV || "development",
+      BASE_URL: process.env.BASE_URL || 'https://api.example.com',
+      env: process.env.NUXT_PUBLIC_ENV || "development",
 
     },
     private: {
-    API_KEY: process.env.NUXT_API_KEY,
+      API_KEY: process.env.NUXT_API_KEY,
     },
-},
+  },
 
 })

@@ -1,12 +1,25 @@
-<template>
+﻿<template>
   <button
     :type="type"
-    :disabled="disabled"
+    :disabled="disabled || loading"
     :class="computedClasses"
     @click="onClick"
   >
+    <span v-if="loading" class="inline-flex items-center justify-center">
+      <i class="pi pi-spin pi-spinner text-current body-small" />
+    </span>
+
+    <BaseCustomIcon
+      v-else-if="createIcon"
+      :name="createIcon"
+      customClass=""
+    />
+
     <slot name="icon-left" />
-    <span><slot /></span>
+
+    <span v-if="title">{{ title }}</span>
+    <span v-else><slot /></span>
+
     <slot name="icon-right" />
   </button>
 </template>
@@ -15,68 +28,65 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  type: {
-    type: String,
-    default: 'button'
-  },
-  color: {
-    type: String,
-    default: 'primary' // 'primary', 'secondary', 'danger', etc.
-  },
-  size: {
-    type: String,
-    default: 'md' // 'sm', 'md', 'lg'
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  fullWidth: {
-    type: Boolean,
-    default: false
-  },
-  outline: {
-    type: Boolean,
-    default: false
-  }
+  title: { type: String, default: '' },
+  type: { type: String, default: 'button' },
+
+  // Design-system props used across the app
+  bgColor: { type: String, default: '' },
+  textColor: { type: String, default: '' },
+  fullWidth: { type: Boolean, default: false },
+  loading: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  createIcon: { type: String, default: '' },
+
+  // Backwards-compatible props (still supported)
+  color: { type: String, default: 'primary' },
+  size: { type: String, default: 'md' },
+  outline: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['click'])
 
-/* ---------- CLASS COMPUTATION ---------- */
 const computedClasses = computed(() => {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    'inline-flex items-center justify-center gap-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:opacity-50 disabled:cursor-not-allowed button'
 
   const sizes = {
-    sm: 'text-sm px-3 py-1.5',
-    md: 'text-base px-4 py-2',
-    lg: 'text-lg px-6 py-3'
+    sm: 'px-3 py-2 h-9',
+    md: 'px-4 py-2.5 h-10',
+    lg: 'px-6 py-3 h-12'
   }
 
-  const colors = {
+  const legacyColors = {
     primary: props.outline
-      ? 'border border-blue-500 text-blue-500 hover:bg-blue-50'
-      : 'bg-blue-500 text-white hover:bg-blue-600',
+      ? 'border border-primary-300 text-primary-300 hover:bg-primary-50'
+      : 'bg-primary-300 text-neutral-inverted hover:bg-primary-400',
     secondary: props.outline
-      ? 'border border-gray-400 text-gray-700 hover:bg-gray-50'
-      : 'bg-gray-500 text-white hover:bg-gray-600',
+      ? 'border border-neutral-line text-neutral-primary hover:bg-neutral-muted'
+      : 'bg-neutral-muted text-neutral-primary hover:bg-neutral-line',
     danger: props.outline
-      ? 'border border-red-500 text-red-600 hover:bg-red-50'
-      : 'bg-red-500 text-white hover:bg-red-600'
+      ? 'border border-danger-300 text-danger-300 hover:bg-danger-50'
+      : 'bg-danger-300 text-neutral-inverted hover:bg-danger-400'
   }
+
+  const resolvedBg = props.bgColor
+    ? props.bgColor
+    : legacyColors[props.color] || legacyColors.primary
+
+  const resolvedText = props.textColor ? props.textColor : ''
 
   return [
     base,
     sizes[props.size] || sizes.md,
-    colors[props.color] || colors.primary,
+    resolvedBg,
+    resolvedText,
     props.fullWidth ? 'w-full' : ''
   ].join(' ')
 })
 
-/* ---------- CLICK HANDLER ---------- */
-const onClick = () => {
-  if (!props.disabled) emit('click')
+const onClick = (event) => {
+  if (props.disabled || props.loading) return
+  emit('click', event)
 }
 </script>
 

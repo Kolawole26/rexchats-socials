@@ -1,25 +1,39 @@
-<template>
+﻿<template>
   <div class="relative">
-    <div class=" flex items-center mb-1">
-      <h4 class=" font-semibold capitalize" v-if="title">
-      {{ title }}
-    </h4>
     <div
-      class="flex items-center ml-2 bg-neutral-20 border border-neutral-100 py-[1px] px-[6px] rounded-full b-shadow"
+      v-if="title || $slots.actions || showCountBadge"
+      class="flex items-center justify-between gap-4 flex-wrap mb-4"
     >
-      <div class="w-[6px] h-[6px] rounded-full bg-[#367EE8] mr-[6px]"></div>
-      <span class="text-neutral-l-800 body-xsmall"
-        >{{ row_count }} {{ count_label }}</span
-      >
+      <div class="flex items-center gap-2 min-w-0">
+        <h4
+          v-if="title"
+          class="font-semibold capitalize truncate text-neutral-primary"
+        >
+          {{ title }}
+        </h4>
+
+        <div
+          v-if="showCountBadge"
+          class="bg-primary-50 border border-primary-75 rounded-[100px] px-[7px] py-[1px]"
+        >
+          <span class="body-xsmall text-neutral-primary">
+            {{ row_count }}<span v-if="count_label"> {{ count_label }}</span>
+          </span>
+        </div>
+      </div>
+
+      <div v-if="$slots.actions" class="w-full sm:w-auto">
+        <slot name="actions" />
+      </div>
     </div>
-    </div>
-    <p v-if="description" class="body-regular text-neutral-l-600 mb-4">
+
+    <p v-if="description" class="body-regular text-neutral-secondary mb-4">
       {{ description }}
     </p>
 
     <div class="grid">
       <div class="col-12 overflow-auto">
-        <div class="card text-sm font-normal capitalize">
+        <div class="card body-small font-normal capitalize">
           <DataTable
             v-model:selection="selectedProduct"
             :value="mockData"
@@ -40,13 +54,11 @@
                     : 'py-5 flex justify-between items-center overflow-auto table-header flex-wrap gap-2'
                 "
               >
-                <div
-                  class="flex bg-transparent justify-start items-center flex-wrap gap-2"
-                >
+                <div class="flex bg-transparent justify-start items-center flex-wrap gap-2">
                   <div class="text-left" v-if="hasSearch">
                     <div class="sm:w-[274px] w-full max-w-full">
-                      <IconField class="">
-                        <InputIcon class="pi pi-search dark:!text-[#8F8E93]"> </InputIcon>
+                      <IconField>
+                        <InputIcon class="pi pi-search" />
                         <InputText
                           v-model="search"
                           @input="onInput"
@@ -56,29 +68,11 @@
                       </IconField>
                     </div>
                   </div>
-                  <slot name="dateFilter"></slot>
+                  <slot name="dateFilter" />
                 </div>
 
-                <div
-                  class="flex bg-transparent xl:justify-end items-center flex-wrap gap-2"
-                >
-                  <slot name="filter"></slot>
-                  <!-- <div class="flex justify-end items-center" v-if="hasLimit">
-                    <label for="limit" class="text-sm text-[#7C7C7A] mr-2">{{
-                      "show"
-                    }}</label>
-                    <FormSelect
-                      placeholder="10"
-                      name="limit"
-                      :options="limits"
-                      id="limit"
-                      v-model="limit"
-                      item-text="name"
-                      item-value="value"
-                      @update:model-value="onLimit"
-                      hideError
-                    />
-                  </div> -->
+                <div class="flex bg-transparent xl:justify-end items-center flex-wrap gap-2">
+                  <slot name="filter" />
                 </div>
               </div>
             </slot>
@@ -99,7 +93,7 @@
                 :frozen="!!column.frozen"
                 :class="column.class"
                 alignFrozen="right"
-                class="cursor-pointer body-small text-neutral-300"
+                class="cursor-pointer body-small text-neutral-secondary"
               >
                 <template #body="slotProps">
                   <slot
@@ -114,21 +108,19 @@
             </slot>
 
             <template #footer v-if="!mockData || mockData.length < 1">
-              <div
-                class="flex flex-col items-center justify-center gap-6 py-12"
-              >
-              <div class=" bg-neutral-30 p-5 rounded-full">
-                <BaseCustomIcon name="table" />
-              </div>
+              <div class="flex flex-col items-center justify-center gap-6 py-12">
+                <div class="bg-neutral-muted p-5 rounded-full">
+                  <BaseCustomIcon name="table" />
+                </div>
 
-              <div v-if="loading" class="flex items-center justify-center gap-2 py-20">
-                  <p class="body-small text-neutral-text_secondary">Loading data...</p>
-                  <i class="pi pi-spin pi-spinner text-2xl text-primary-300"></i>
+                <div v-if="props.loading" class="flex items-center justify-center gap-2 py-20">
+                  <p class="body-small text-neutral-secondary">Loading data...</p>
+                  <i class="pi pi-spin pi-spinner body-large text-primary-300"></i>
                 </div>
 
                 <div v-else class="text-center max-w-[406px]">
-                  <h4 class="mb-2">No Data to Show</h4>
-                  <p class="body-normal text-neutral-200">
+                  <h4 class="mb-2 text-neutral-primary">No Data to Show</h4>
+                  <p class="body-regular text-neutral-secondary">
                     Your information will be displayed here when available.
                   </p>
                 </div>
@@ -140,22 +132,13 @@
             class="sm:flex sm:justify-center sm:items-center"
             v-if="mockData && mockData.length > 0 && hasPagination"
           >
-            <!-- <div
-              class="mb-6 sm:mb-0 text-[#5C5C5C] bg-primary-50 w-max px-5 py-2 rounded-full"
-            >
-              <p class="sm:text-base text-sm lowercase">
-                Showing {{ metadata.page }} of {{ metadata.pages }}
-              </p>
-            </div> -->
-
             <Paginator
-              v-if="mockData && mockData.length > 0 && hasPagination"
-              v-model="metadata.page"
+              :first="paginatorFirst"
               :rows="metadata.limit"
               :totalRecords="metadata.total"
               :rowsPerPageOptions="limits"
-              @page="onPage($event)"
-              @update:rows="onPageLimit($event)"
+              @page="onPage"
+              @update:rows="onPageLimit"
             />
           </div>
         </div>
@@ -166,9 +149,7 @@
 </template>
 
 <script setup>
-import debounce from "lodash/debounce";
-import { useToast } from "primevue/usetoast";
-import FormSelect from "~/components/common/input/FormSelect.vue";
+import { computed, ref, onMounted } from 'vue'
 
 const props = defineProps({
   loading: {
@@ -178,162 +159,128 @@ const props = defineProps({
   columns: {
     type: Array,
     required: true,
-    default: () => [],
+    default: () => []
   },
   mockData: {
     type: Array,
     required: true,
-    default: () => [],
+    default: () => []
   },
   otherFilter: {
     type: Object,
-    default: () => {},
+    default: () => ({})
   },
   url: {
     type: String,
-    default: "",
+    default: ''
   },
   subPath: {
     type: String,
-    default: "",
+    default: ''
   },
   title: {
     type: String,
-    default: "",
+    default: ''
   },
   count_label: {
     type: String,
-    default: "",
+    default: ''
   },
   row_count: {
     type: Number,
-    default: 0,
+    default: 0
+  },
+  showCountBadge: {
+    type: Boolean,
+    default: true
   },
   description: {
     type: String,
-    default: "",
+    default: ''
   },
   dateFilter: {
     type: Boolean,
-    default: true,
+    default: true
   },
   hasSearch: {
     type: Boolean,
-    default: true,
+    default: true
   },
   hasLimit: {
     type: Boolean,
-    default: false,
+    default: false
   },
   hasPagination: {
     type: Boolean,
-    default: true,
+    default: true
   },
   plainInfo: {
     type: Boolean,
-    default: false,
+    default: false
   },
   itemsBulkActions: {
     type: Array,
-    default: () => [],
+    default: () => []
   },
   metadata: {
-    type: Array,
-    default: () => [{ page: 1, limit: 10, total: 0, pages: 1 }],
-  },
-});
+    type: Object,
+    default: () => ({ page: 1, limit: 10, total: 0, pages: 1 })
+  }
+})
 
-const first = ref(0);
-const selectedProduct = ref(null);
-const search = ref("");
-// const tableData = ref([]);
-const limits = [10, 20, 30];
-const page = ref(1);
-const limit = ref(10);
-const pages = ref(1);
-const total = ref(1);
-const loading = ref(false);
-const filter = ref("");
-const order = ref(1);
-const selectedColumns = ref([...props.columns]);
+const selectedProduct = ref(null)
+const search = ref('')
+const limits = [10, 20, 30]
+const selectedColumns = ref([...props.columns])
+
+const paginatorFirst = computed(() => {
+  const currentPage = Number(props.metadata?.page || 1)
+  const currentLimit = Number(props.metadata?.limit || 10)
+  return Math.max(0, (currentPage - 1) * currentLimit)
+})
+
 const emit = defineEmits([
-  "bulkChange",
-  "create",
-  "onPagination",
-  "onSearch",
-  "onSort",
-  "onLimit",
-  "onReload",
-  "onView",
-]);
-const toast = useToast();
+  'bulkChange',
+  'create',
+  'onPagination',
+  'onSearch',
+  'onSort',
+  'onLimit',
+  'onReload',
+  'onView'
+])
 
 onMounted(() => {
-  onToggle(selectedColumns.value);
-});
-onBeforeMount(async () => {
-  reset();
-});
+  onToggle(selectedColumns.value)
+})
 
 const onToggle = (val) => {
-  selectedColumns.value = props.columns.filter((col) => val.includes(col));
-};
+  selectedColumns.value = props.columns.filter((col) => val.includes(col))
+}
+
 const sort = (e) => {
-  emit("onSort", "sort", e.sortOrder, e.sortField);
-  order.value = e.sortOrder;
-};
-const onPage = ($event) => {
-  page.value = $event.page + 1;
-  emit("onPagination", "page", page.value);
-};
-const onPageLimit = ($event) => {
-  limit.value = $event
-  if (props.metadata.limit !== limit.value) {
-    emit("onLimit", "limit", limit.value);
-  };
-};
+  emit('onSort', 'sort', e.sortOrder, e.sortField)
+}
+
+const onPage = (event) => {
+  const nextPage = Number(event.page) + 1
+  emit('onPagination', 'page', nextPage)
+}
+
+const onPageLimit = (rows) => {
+  const nextLimit = Number(rows)
+  if (Number(props.metadata?.limit) !== nextLimit) {
+    emit('onLimit', 'limit', nextLimit)
+  }
+}
+
 const onInput = () => {
-  emit("onSearch", "search", search.value);
-};
+  emit('onSearch', 'search', search.value)
+}
+
 const view = (e) => {
-  emit("onView", e.data);
-};
-const onLimit = (info) => {
-  emit("onLimit", "limit", limit.value);
-};
-const tableReload = (info) => {
-  emit("onReload", "reload");
-};
-const reset = () => {
-  first.value = (page.value - 1) * limit.value;
-};
-
-
+  emit('onView', e.data)
+}
 </script>
 
-<style>
-.p-datatable-column-title {
-  @apply text-sm text-neutral-200 !font-normal;
-}
 
-.p-datatable-column-header-content {
-  @apply text-neutral-20 py-1;
-}
-
-.p-datatable-header-cell {
-  @apply !bg-neutral-20;
-}
-
-.p-paginator-page {
-  @apply !text-neutral-500;
-}
-.p-paginator-content button {
-  @apply !text-neutral-500;
-}
-.p-paginator-rpp-dropdown {
-  @apply py-3 !px-3;
-}
-.p-paginator-page.p-paginator-page-selected {
-  @apply !bg-neutral-500 !text-neutral-10;
-}
-</style>

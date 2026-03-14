@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="flex flex-col gap-1 font-inter">
     <!-- Label -->
     <label v-if="label" class="body-xsmall text-neutral-500 mb-2">
@@ -56,7 +56,7 @@
     <!-- Error Message -->
     <span
       v-if="error && !hideError"
-      class="text-danger-300 mt-1 text-xs"
+      class="text-danger-300 mt-1 body-xsmall"
     >
       {{ error }}
     </span>

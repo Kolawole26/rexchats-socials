@@ -1,155 +1,162 @@
-<template>
-  <div class="">
-    <!-- Header -->
-    <div
-      class="h-[70px] flex justify-between items-center px-8 bg-neutral-10 border-b border-neutral-100 dark:bg-neutral-10 relative lg:static"
-    >
-      <!-- Sidebar Toggle Button (Mobile) -->
-      <a
-        class="cursor-pointer block lg:hidden text-surface-700 dark:text-surface-100 mr-4 mt-1"
-        @click="toggleSidebar"
-      >
-        <i class="pi pi-bars text-2xl" />
-      </a>
-
-      <!-- Notification and User Greeting (Mobile) -->
+﻿<template>
+  <header class="h-[72px] bg-neutral-surface border-b border-neutral-line px-6 flex items-center justify-between">
+    <!-- Left -->
+    <div class="flex items-center gap-3 min-w-0">
       <button
-        class="flex items-center ml-auto mr-2 lg:hidden"
-        aria-haspopup="true"
-        aria-controls="overlay_menu"
-        @click="toggle"
+        type="button"
+        class="lg:hidden w-10 h-10 rounded-lg border border-neutral-line flex items-center justify-center text-neutral-secondary hover:bg-neutral-muted"
+        @click="emit('toggle-sidebar')"
+        aria-label="Open sidebar"
       >
-        <div class="bg-secondary-75 p-[10px] rounded-full text-neutral-500 dark:text-neutral-10 mr-2">
-          <BaseCustomIcon name="users" />
-        </div>
-        <p class="mr-2 text-base font-normal text-neutral-500">
-          <span class="text-neutral-500 body-regular">Micheal Davidson</span>
-        </p>
-        <i
-          class="pi pi-chevron-down text-sm leading-none"
-          :class="onBtnDirection ? 'rotate-[180deg]' : ''"
-        />
+        <i class="pi pi-bars" />
       </button>
 
-      <!-- Navigation Breadcrumbs and User Menu (Desktop) -->
-      <ul
-        class="list-none p-0 m-0 hidden lg:flex lg:items-center select-none lg:flex-row w-auto lg:w-full border lg:border-0 border-surface bg-surface-0 dark:bg-surface-950 right-0 top-full z-10 shadow lg:shadow-none absolute lg:static"
+
+
+      <h5 class="text-neutral-primary h5 truncate">
+        {{ pageTitle }}
+      </h5>
+    </div>
+
+    <!-- Right -->
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        class=" p-3 rounded-lg bg-primary-50 flex items-center justify-center text-primary-400 hover:bg-neutral-muted"
+        aria-label="Notifications"
       >
-        <!-- Breadcrumbs -->
-        <h4 class="text-base font-semibold ml-3 capitalize">
-          <NuxtLink
-            v-if="prevNavProp"
-            :to="prevNavLink ? `/${prevNavLink}` : `/${prevNavProp}`"
-            class="text-neutral-200"
-          >
-            {{ prevNavProp }} 
-            <i class="pi pi-chevron-right text-xs text-neutral-200 leading-none px-2" />
-          </NuxtLink>
-          <NuxtLink
-            v-if="currentPrevProp"
-            :to="currentPrevLink ? `/${currentPrevLink}` : `/${currentPrevProp}`"
-            class="text-neutral-200"
-          >
-            {{ currentPrevProp }} 
-            <i class="pi pi-chevron-right text-xs text-neutral-200 leading-none px-2" />
-          </NuxtLink>
+        <BaseCustomIcon name="bell" customClass="" />
+      </button>
 
-          {{ customProp }}
-        </h4>
-        <!-- User Dropdown -->
-
-        <button
-          class="flex items-center ml-auto mr-2"
-          aria-haspopup="true"
-          aria-controls="overlay_menu"
-          @click="toggle"
-        >
-          <div class="bg-secondary-75 p-[10px] rounded-full text-neutral-500 dark:text-neutral-10 mr-2">
-            <BaseCustomIcon name="users" />
-          </div>
-          <p class="mr-2 text-base font-normal text-neutral-500">
-            <span class="text-neutral-500 body-regular">Micheal Davidson</span>
-          </p>
-          <i
-            class="pi pi-chevron-down text-sm leading-none"
-            :class="onBtnDirection ? 'rotate-[180deg]' : ''"
+      <button
+        type="button"
+        class="flex items-center gap-3"
+        aria-haspopup="true"
+        aria-controls="user_menu"
+        @click="toggleMenu"
+      >
+        <div class="w-10 h-10 rounded-lg bg-primary-300 text-neutral-inverted flex items-center justify-center font-semibold">
+          {{ initials }}
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+          <p class="body-regular text-neutral-primary">{{ displayName }}</p>
+          <BaseCustomIcon
+            name="chevron-down"
+            customClass="text-neutral-secondary"
+            :class="menuOpen ? 'rotate-180' : ''"
           />
-        </button>
-        <!-- Dropdown Menu -->
-        <Menu ref="op" id="overlay_menu" :popup="true" :model="items">
-          <template #item="{ item, props }">
-            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-              <a
-                v-ripple
-                :href="href"
-                v-bind="props.action"
-                @click="(navigate, (onBtnDirection = false))"
-                class=" flex items-center justify-between"
-              >
-                <span class="ml-2 body-xsmall">{{ item.label }}</span>
-                <div class=" text-neutral-200 w-4">
-                  <BaseCustomIcon :name="item.icon" />
-                </div>
-              </a>
-            </router-link>
-            <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action" class="flex items-center justify-between">
+        </div>
+      </button>
+
+      <Menu ref="menuRef" id="user_menu" :popup="true" :model="menuItems">
+        <template #item="{ item, props }">
+          <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+            <a
+              v-ripple
+              :href="href"
+              v-bind="props.action"
+              class="flex items-center justify-between"
+              @click="(navigate(), (menuOpen = false))"
+            >
               <span class="ml-2 body-xsmall">{{ item.label }}</span>
-              <div class=" text-danger-300 w-4">
+              <div class="w-4 text-primary-400">
                 <BaseCustomIcon :name="item.icon" />
               </div>
             </a>
-          </template>
-        </Menu>
-      </ul>
-    </div>
+          </router-link>
 
-    <!-- Logout Confirmation Modal -->
-    <ModalConfirmation
-      :isOpen="logoutModal"
-      title="Log Out"
-      confirmationMessage="Are you sure you want to logout?"
-       :informationText="customInfo"
-      actionButtonText="Log Out"
-      :actionButtonClass="modalActionClass"
-      :requireReason="false"
-      btnIcon=""
-      @close="logoutModal = false"
-      @confirm="handlePrimaryAction"
-    />
-  </div>
+          <a
+            v-else
+            v-ripple
+            href="#"
+            v-bind="props.action"
+            class="flex items-center justify-between"
+            @click.prevent="onMenuCommand(item)"
+          >
+            <span class="ml-2 body-xsmall">{{ item.label }}</span>
+            <div class="w-4 text-danger-300">
+              <BaseCustomIcon :name="item.icon" />
+            </div>
+          </a>
+        </template>
+      </Menu>
+
+      <ModalConfirmation
+        :isOpen="logoutModal"
+        title="Log Out"
+        confirmationMessage="Are you sure you want to logout?"
+        informationText="You will need to login again to continue."
+        actionButtonText="Log Out"
+        actionButtonClass="bg-danger-300 hover:bg-danger-400"
+        :requireReason="false"
+        btnIcon=""
+        @close="logoutModal = false"
+        @confirm="handleLogout"
+      />
+    </div>
+  </header>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useUserDetailsStore } from "@/store/userDetailsStore";
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from '#vue-router'
+import { useUserDetailsStore } from '@/store/userDetailsStore'
+import { storeToRefs } from 'pinia'
 
-const userDetailsStore = useUserDetailsStore();
-const { user, token } = storeToRefs(userDetailsStore);
-// Props
 const props = defineProps({
   customProp: {
     type: String,
-    required: true
+    default: ''
   },
   prevNavProp: {
-    type: String
+    type: String,
+    default: ''
   },
   prevNavLink: {
-    type: String
+    type: String,
+    default: ''
   },
   currentPrevProp: {
-    type: String
+    type: String,
+    default: ''
   },
   currentPrevLink: {
-    type: String
+    type: String,
+    default: ''
   }
 })
 
-console.log(props)
+const emit = defineEmits(['toggle-sidebar'])
 
-// Dropdown Menu Items
-const items = ref([
+const route = useRoute()
+const router = useRouter()
+
+const userDetailsStore = useUserDetailsStore()
+const { user, token } = storeToRefs(userDetailsStore)
+
+const menuRef = ref()
+const menuOpen = ref(false)
+const logoutModal = ref(false)
+
+const displayName = computed(() => {
+  return user.value?.name || user.value?.full_name || 'Jane Doe'
+})
+
+const initials = computed(() => {
+  const source = displayName.value || 'JD'
+  const parts = source.trim().split(/\s+/).slice(0, 2)
+  return parts.map((p) => p[0]?.toUpperCase()).join('') || 'JD'
+})
+
+const pageTitle = computed(() => {
+  return props.customProp || (route.meta?.customProp ? String(route.meta.customProp) : '') || 'Dashboard'
+})
+
+const showBack = computed(() => {
+  return Boolean(props.prevNavProp || props.currentPrevProp)
+})
+
+const menuItems = ref([
   {
     label: 'Profile',
     icon: 'users',
@@ -164,42 +171,37 @@ const items = ref([
   }
 ])
 
-const router = useRouter()
-// Refs
-const op = ref()
-const logoutModal = ref(false)
-const onBtnDirection = ref(false)
-const viewNotification = ref(false)
-
-// Emit event to toggle sidebar
-const emit = defineEmits(['toggle-sidebar'])
-
-// Toggle Dropdown Menu
-const toggle = (event) => {
-  onBtnDirection.value = !onBtnDirection.value
-  op.value.toggle(event)
+const toggleMenu = (event) => {
+  menuOpen.value = !menuOpen.value
+  menuRef.value.toggle(event)
 }
 
-// Toggle Sidebar
-const toggleSidebar = () => {
-  emit('toggle-sidebar')
+const onMenuCommand = (item) => {
+  if (item && item.command) item.command()
+  menuOpen.value = false
 }
 
-// Handle Logout Action
-const handlePrimaryAction = () => {
-  token.value = "";
-  user.value = {};
-  const theme = localStorage.getItem("color-theme"); // Save theme
-  localStorage.clear(); // Clear everything
-  if (theme) {
-    localStorage.setItem("color-theme", theme); // Restore theme
+const goBack = () => {
+  router.back()
+}
+
+const handleLogout = () => {
+  token.value = ''
+  user.value = {}
+
+  if (process.client) {
+    const theme = localStorage.getItem('color-theme')
+    localStorage.clear()
+    if (theme) localStorage.setItem('color-theme', theme)
   }
-  router.push("/login");
-};
+
+  logoutModal.value = false
+  router.push('/login')
+}
 </script>
 
 <style>
 .p-menu {
-  @apply !min-w-[143px]
+  @apply !min-w-[160px];
 }
 </style>

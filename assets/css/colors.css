@@ -1,100 +1,219 @@
-  /* assets/css/colors.css */
+/* assets/css/colors.css */
 
-  :root {
-    /* Primary Colors */
-    --primary-50: #E8E8EF;
-    --primary-75: #BBBDD0;
-    --primary-100: #8E8BB1;
-    --primary-200: #605D92;
-    --primary-300: #1C1763;
-    --primary-400: #5612AF;
-    --primary-500: #110E3B;
-    --primary-600: #0B0928;
-  
-    /* Secondary Colors */
-    --secondary-50: #FFF5EE;
-    --secondary-75: #FFE2C8;
-    --secondary-100: #FFCAA8;
-    --secondary-200: #FBBAB5;
-    --secondary-300: #FF9D51;
-    --secondary-400: #CC7E41;
-    --secondary-500: #995F31;
-  
-    /* Neutral Colors */
-    --neutral-10: #FFFFFF;
-    --neutral-20: #FAFAFA;
-    --neutral-30: #F5F5F5;
-    --neutral-50: #E8E9E9;
-    --neutral-100: #E1E1E1;
-    --neutral-200: #97989A;
-    --neutral-300: #3A3A3A;
-    --neutral-500: #121212;
-  
-    /* Success Colors */
-    --success-50: #E9F8EE;
-    --success-75: #A4E2BB;
-    --success-100: #7ED69E;
-    --success-200: #46C474;
-    --success-300: #20B858;
-    --success-400: #1A9436;
-    --success-500: #147036;
-  
-    /* Danger Colors */
-    --danger-50: #FDE7E7;
-    --danger-75: #F99E9E;
-    --danger-100: #F67676;
-    --danger-200: #F23A3A;
-    --danger-300: #EF1212;
-    --danger-400: #BE0E0E;
-    --danger-500: #920B0B;
-  
-    /* Warning Colors */
-    --warning-50: #FFF9E6;
-    --warning-75: #FFE597;
-    --warning-100: #FFDA6C;
-    --warning-200: #FFCB2C;
-    --warning-300: #FFC001;
-    --warning-400: #B38601;
-    --warning-500: #9C7501;
-  
-    /* Info Colors */
-    --info-50: #E7F7FD;
-    --info-75: #9CDAF6;
-    --info-100: #73CBF2;
-    --info-200: #37B4ED;
-    --info-300: #0EA5E9;
-    --info-400: #0B849A;
-    --info-500: #09658E;
-  }
-  
-  .dark {
-    /* Primary Colors (Dark Mode) */
-    --primary-50: #E8E8EF;
-    --primary-75: #BBBDD0;
-    --primary-100: #8E8BB1;
-    --primary-200: #605D92;
-    --primary-300: #1C1763;
-    --primary-400: #5612AF;
-    --primary-500: #110E3B;
-    --primary-600: #0B0928;
-  
-    /* Secondary Colors (Dark Mode) */
-    --secondary-50: #FFF5EE;
-    --secondary-75: #FFE2C8;
-    --secondary-100: #FFCAA8;
-    --secondary-200: #FBBAB5;
-    --secondary-300: #FF9D51;
-    --secondary-400: #CC7E41;
-    --secondary-500: #995F31;
-  
-    /* Neutral Colors (Dark Mode) */
-    --neutral-10: #121212;
-    --neutral-20: #2A2A2A;
-    --neutral-30: #414141;
-    --neutral-50: #2A2A2A;
-    --neutral-100: #444444;
-    --neutral-200: #717171;
-    --neutral-300: #B8B8B8;
-    --neutral-500: #E0E0E0;
-  }
-  
+:root {
+
+  /* =========================
+     NEUTRAL COLORS (Light)
+     ========================= */
+
+  --neutral-background: #FAFAFA;
+  --neutral-surface: #FFFFFF;
+  --neutral-muted: #F3F3F3;
+  --neutral-line: #E8E9E9;
+
+  --neutral-primary: #121212;
+  --neutral-secondary: #97989A;
+  --neutral-tertiary: #E1E1E1;
+  --neutral-inverted: #FAFAFA;
+
+
+
+  /* =========================
+     PRIMARY (Purple)
+     ========================= */
+
+  --primary-50: #EEE6F2;
+  --primary-75: #CBB3D9;
+  --primary-100: #A981C0;
+  --primary-200: #753599;
+  --primary-300: #520380;
+  --primary-400: #420266;
+  --primary-500: #31024D;
+
+
+
+  /* =========================
+     SUCCESS
+     ========================= */
+
+  --success-50: #E6F2EC;
+  --success-75: #B3DBC5;
+  --success-100: #80BE9F;
+  --success-200: #339765;
+  --success-300: #007D3E;
+  --success-400: #006132;
+  --success-500: #004825;
+
+
+
+  /* =========================
+     DANGER
+     ========================= */
+
+  --danger-50: #FDE7E7;
+  --danger-75: #F99E9E;
+  --danger-100: #F67676;
+  --danger-200: #F24141;
+  --danger-300: #EF1212;
+  --danger-400: #BE0E0E;
+  --danger-500: #920B0B;
+
+
+
+  /* =========================
+     WARNING
+     ========================= */
+
+  --warning-50: #F8F1E6;
+  --warning-75: #ECECB3;
+  --warning-100: #DDAA80;
+  --warning-200: #C57C33;
+  --warning-300: #B65B00;
+  --warning-400: #924900;
+  --warning-500: #6D3700;
+
+
+
+  /* =========================
+     INFO
+     ========================= */
+
+  --info-50: #E7F0F7;
+  --info-75: #9CD3F6;
+  --info-100: #73CBF2;
+  --info-200: #3794ED;
+  --info-300: #0EA5E9;
+  --info-400: #0B849A;
+  --info-500: #09658E;
+
+
+
+  /* =========================
+     BRAND / ACCENT
+     ========================= */
+
+  --brand-indigo-background: #EEEFFB;
+  --brand-indigo-foreground: #5855D6;
+
+  --brand-blue-background: #E6F2FF;
+  --brand-blue-foreground: #007AFF;
+
+  --brand-purple-background: #F7EEFC;
+  --brand-purple-foreground: #AF52DE;
+
+  --brand-pink-background: #FFE4EE;
+  --brand-pink-foreground: #FF2D55;
+
+  --brand-red-background: #F9EEEC;
+  --brand-red-foreground: #C25745;
+
+  --brand-moss-background: #EEF0E9;
+  --brand-moss-foreground: #606C38;
+
+  --brand-monostone-background: #EEF1F2;
+  --brand-monostone-foreground: #4A717D;
+
+  --brand-magenta-background: #EDEAEC;
+  --brand-magenta-foreground: #9B5A7B;
+}
+
+
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark {
+
+  /* Neutral */
+
+  --neutral-background: #2A2A2A;
+  --neutral-surface: #121212;
+  --neutral-muted: #2A2A2A;
+  --neutral-line: #414141;
+
+  --neutral-primary: #FAFAFA;
+  --neutral-secondary: #717171;
+  --neutral-tertiary: #444444;
+  --neutral-inverted: #FAFAFA;
+
+
+  /* Primary */
+
+  --primary-50: #341C41;
+  --primary-75: #4D2B61;
+  --primary-100: #420266;
+  --primary-200: #520380;
+  --primary-300: #753599;
+  --primary-400: #A981C0;
+  --primary-500: #CBB3D9;
+
+
+  /* Success */
+
+  --success-50: #003219;
+  --success-75: #003F1F;
+  --success-100: #006432;
+  --success-200: #007D3E;
+  --success-300: #339765;
+  --success-400: #80BE9F;
+  --success-500: #D3E6D5;
+
+
+  /* Danger */
+
+  --danger-50: #4A1111;
+  --danger-75: #7D101D;
+  --danger-100: #AA2929;
+  --danger-200: #EF1212;
+  --danger-300: #F78989;
+  --danger-400: #F4B8B8;
+  --danger-500: #FDE7E7;
+
+
+  /* Warning */
+
+  --warning-50: #371B00;
+  --warning-75: #502E00;
+  --warning-100: #7F4000;
+  --warning-200: #B65B00;
+  --warning-300: #C57C33;
+  --warning-400: #D6A8B0;
+  --warning-500: #E9CEB3;
+
+
+  /* Info */
+
+  --info-50: #041346;
+  --info-75: #0F3575;
+  --info-100: #0A73A3;
+  --info-200: #0EA5E9;
+  --info-300: #3C8DCB;
+  --info-400: #80B2F4;
+  --info-500: #D8F4F8;
+
+  /* BRAND / ACCENT (Dark Mode) */
+  --brand-indigo-background: #1A1A40;
+  --brand-indigo-foreground: #7678DE;
+
+  --brand-blue-background: #00254C;
+  --brand-blue-foreground: #3385FF;
+
+  --brand-purple-background: #2F0F3C;
+  --brand-purple-foreground: #BF75E5;
+
+  --brand-pink-background: #4C0019;
+  --brand-pink-foreground: #FF5777;
+
+  --brand-red-background: #7F1E1C;
+  --brand-red-foreground: #CE7964;
+
+  --brand-monostone-background: #1B2B32;
+  --brand-monostone-foreground: #698D97;
+
+  --brand-moss-background: #262B0E;
+  --brand-moss-foreground: #8B9E4F;
+
+  --brand-magenta-background: #1F131B;
+  --brand-magenta-foreground: #7E637C;
+}
