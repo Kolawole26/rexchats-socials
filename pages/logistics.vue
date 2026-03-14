@@ -1,36 +1,27 @@
-﻿
+
 <template>
   <section class="flex flex-col gap-6">
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div class="bg-neutral-surface border border-neutral-line rounded-2xl p-5 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-info-50 text-info-300 flex items-center justify-center">
-          <BaseCustomIcon name="logistics" customClass="w-5 h-5" />
-        </div>
-        <div class="flex flex-col">
-          <p class="body-small text-neutral-secondary">Shipped Orders</p>
-          <h3 class="text-neutral-primary">{{ shippedCount }}</h3>
-        </div>
-      </div>
+      <CommonCards
+        title="Shipped Orders"
+        :value="shippedCount"
+        icon="logistics"
+        iconWrapperClass="bg-brand-blue-background text-brand-blue-foreground"
+      />
 
-      <div class="bg-neutral-surface border border-neutral-line rounded-2xl p-5 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-success-50 text-success-300 flex items-center justify-center">
-          <BaseCustomIcon name="check_circle" customClass="w-5 h-5" />
-        </div>
-        <div class="flex flex-col">
-          <p class="body-small text-neutral-secondary">Delivered Orders</p>
-          <h3 class="text-neutral-primary">{{ deliveredCount }}</h3>
-        </div>
-      </div>
+      <CommonCards
+        title="Delivered Orders"
+        :value="deliveredCount"
+        icon="logistics"
+        iconWrapperClass="bg-brand-moss-background text-brand-moss-foreground"
+      />
 
-      <div class="bg-neutral-surface border border-neutral-line rounded-2xl p-5 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-danger-50 text-danger-300 flex items-center justify-center">
-          <BaseCustomIcon name="cancel-red" customClass="w-5 h-5" />
-        </div>
-        <div class="flex flex-col">
-          <p class="body-small text-neutral-secondary">Returned Orders</p>
-          <h3 class="text-neutral-primary">{{ returnedCount }}</h3>
-        </div>
-      </div>
+      <CommonCards
+        title="Returned Orders"
+        :value="returnedCount"
+        icon="logistics"
+        iconWrapperClass="bg-brand-pink-background text-brand-pink-foreground"
+      />
     </section>
 
     <div

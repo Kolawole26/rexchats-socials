@@ -115,6 +115,9 @@
 
   --brand-magenta-background: #EDEAEC;
   --brand-magenta-foreground: #9B5A7B;
+
+  --brand-persian-background: #F9EEEC;
+  --brand-persian-foreground: #C25745;
 }
 
 
@@ -216,4 +219,7 @@
 
   --brand-magenta-background: #1F131B;
   --brand-magenta-foreground: #7E637C;
+
+  --brand-persian-background: #3A1A15;
+  --brand-persian-foreground: #CE796A;
 }

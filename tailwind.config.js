@@ -156,6 +156,11 @@ module.exports = {
             background: "var(--brand-magenta-background)",
             foreground: "var(--brand-magenta-foreground)",
           },
+
+          persian: {
+            background: "var(--brand-persian-background)",
+            foreground: "var(--brand-persian-foreground)",
+          },
         },
       },
 

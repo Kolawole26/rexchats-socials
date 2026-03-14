@@ -1,28 +1,17 @@
 <template>
-  <div class="bg-neutral-20 px-[20px] py-[16px] rounded-lg">
-    <div class="flex items-center mb-[6px] text-neutral-l-600">
-      <div class="mr-[2px]" :class="color">
-        <BaseCustomIcon :name="icon" />
+  <div class="bg-neutral-surface border border-neutral-line rounded-2xl p-5">
+    <div class="flex items-center gap-x-2 mb-2">
+      <div
+        class="w-10 h-10 rounded-xl flex items-center justify-center"
+        :class="resolvedIconWrapperClass"
+      >
+        <BaseCustomIcon :name="icon" :customClass="iconClass" />
       </div>
-      <p class="body-small text-neutral-l-600">{{ title }}</p>
+      <p class="body-small text-neutral-secondary">{{ title }}</p>
     </div>
-    <div class="flex items-center">
-      <h2 class="text-neutral-500 mr-3">{{ formattedValue }}</h2>
-      <div v-if="trendIcon" class="flex items-center">
-        <BaseCustomIcon :name="trendIcon" />
-        <p
-          class="body-regular"
-          :class="[
-            trendIcon === 'trending-down'
-              ? 'text-danger-e-5'
-              : trendIcon === 'trending-up'
-                ? 'text-success-5'
-                : 'text-warning-5'
-          ]"
-        >
-          10%
-        </p>
-      </div>
+
+    <div class="flex flex-col">
+      <h3 class="text-neutral-primary">{{ formattedValue }}</h3>
     </div>
   </div>
 </template>
@@ -37,30 +26,30 @@ const props = defineProps({
     type: [Number, String],
     required: true
   },
-  color: {
+  icon: {
     type: String,
     required: true
   },
-  navIcon: {
-    type: String,
-    required: false
-  },
-  navLink: {
-    type: String,
-    required: false
-  },
-  icon: {
+  iconWrapperClass: {
     type: String,
     default: ''
   },
-  trendIcon: {
+  iconClass: {
+    type: String,
+    default: 'w-5 h-5'
+  },
+
+  // Backwards-compatible alias
+  color: {
     type: String,
     default: ''
   },
+
+  // Optional formatting
   format: {
     type: String,
-    default: 'number', // 'number', 'currency', 'percent'
-    validator: (val) => ['number', 'currency', 'percent'].includes(val)
+    default: 'number',
+    validator: (val) => ['number', 'currency', 'percent', 'raw'].includes(val)
   },
   currency: {
     type: String,
@@ -72,57 +61,50 @@ const props = defineProps({
   },
   decimals: {
     type: Number,
-    default: null // null means auto (depends on format)
+    default: null
   }
 })
 
+const resolvedIconWrapperClass = computed(() => {
+  return props.iconWrapperClass || props.color || 'bg-brand-purple-background text-brand-purple-foreground'
+})
+
 const formattedValue = computed(() => {
-  // Handle empty values
-  if (props.value === null || props.value === undefined) {
-    return '—'
+  if (props.value === null || props.value === undefined) return '—'
+  if (props.format === 'raw') return String(props.value)
+
+  if (typeof props.value === 'string') return props.value
+
+  const numValue = props.value
+  if (typeof numValue !== 'number' || Number.isNaN(numValue)) return String(props.value)
+
+  if (props.format === 'currency') {
+    let formatted = new Intl.NumberFormat(props.locale, {
+      style: 'currency',
+      currency: props.currency,
+      minimumFractionDigits: props.decimals !== null ? props.decimals : 2,
+      maximumFractionDigits: props.decimals !== null ? props.decimals : 2
+    }).format(numValue)
+
+    if (props.currency === 'NGN') {
+      formatted = formatted.replace('NGN', '₦')
+    }
+
+    return formatted.replace(/\s/g, '')
   }
 
-  // Convert to number if it's a numeric string
-  const numValue = typeof props.value === 'string' ? parseFloat(props.value) : props.value
-
-  // Check if the value is a valid number
-  if (typeof numValue !== 'number' || isNaN(numValue)) {
-    return props.value // Return original value if not numeric
+  if (props.format === 'percent') {
+    return new Intl.NumberFormat(props.locale, {
+      style: 'percent',
+      minimumFractionDigits: props.decimals !== null ? props.decimals : 0,
+      maximumFractionDigits: props.decimals !== null ? props.decimals : 0
+    }).format(numValue / 100)
   }
 
-  // Format based on format type
-  let formatted
-  switch (props.format) {
-    case 'currency':
-      formatted = new Intl.NumberFormat(props.locale, {
-        style: 'currency',
-        currency: props.currency,
-        minimumFractionDigits: props.decimals !== null ? props.decimals : 2,
-        maximumFractionDigits: props.decimals !== null ? props.decimals : 2
-      }).format(numValue)
-
-      // Replace "NGN" with "₦" for Nigerian Naira
-      if (props.currency === 'NGN') {
-        formatted = formatted.replace('NGN', '₦')
-      }
-
-      // Remove the space between the currency symbol and the value
-      formatted = formatted.replace(/\s/g, '')
-      return formatted
-
-    case 'percent':
-      return new Intl.NumberFormat(props.locale, {
-        style: 'percent',
-        minimumFractionDigits: props.decimals !== null ? props.decimals : 0,
-        maximumFractionDigits: props.decimals !== null ? props.decimals : 0
-      }).format(numValue / 100)
-
-    case 'number':
-    default:
-      return new Intl.NumberFormat(props.locale, {
-        minimumFractionDigits: props.decimals !== null ? props.decimals : 0,
-        maximumFractionDigits: props.decimals !== null ? props.decimals : numValue % 1 !== 0 ? 2 : 0
-      }).format(numValue)
-  }
+  return new Intl.NumberFormat(props.locale, {
+    minimumFractionDigits: props.decimals !== null ? props.decimals : 0,
+    maximumFractionDigits:
+      props.decimals !== null ? props.decimals : numValue % 1 !== 0 ? 2 : 0
+  }).format(numValue)
 })
 </script>
