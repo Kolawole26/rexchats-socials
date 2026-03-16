@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <span
     v-if="resolved.label"
     class="inline-flex items-center gap-2 rounded-full px-3 py-1 body-xsmall capitalize"
@@ -29,7 +29,7 @@ const resolved = computed(() => {
   if (!s || !raw) return { label: '', icon: '', classes: '' }
   const success = ['completed', 'active', 'paid', 'sent', 'resolved', 'delivered', 'verified', 'success']
   const warning = ['unverified', 'archived', 'in progress', 'pending', 'confirmed', 'processing']
-  const danger = ['cancelled', 'canceled', 'suspended', 'rejected', 'failed', 'ended', 'deleted', 'returned', 'refund']
+  const danger = ['cancelled', 'canceled', 'suspended', 'rejected', 'failed', 'ended', 'deleted', 'returned', 'refund', 'inactive']
 
   if (success.includes(s)) {
     return { label: raw, icon: 'check_circle', classes: 'text-success-300 dark:text-success-75 bg-success-50 dark:bg-success-500' }
@@ -47,6 +47,7 @@ const resolved = computed(() => {
 })
 
 </script>
+
 
 
 

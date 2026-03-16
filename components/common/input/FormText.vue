@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="flex flex-col gap-1 font-inter">
     <!-- Label -->
     <label
@@ -103,7 +103,7 @@ const props = defineProps({
   disabled: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'input'])
 
 const internalValue = ref(props.modelValue)
 
@@ -114,7 +114,10 @@ watch(
 
 const emitChange = (val) => {
   emit('update:modelValue', val)
+  emit('input', val)
 }
 </script>
+
+
 
 

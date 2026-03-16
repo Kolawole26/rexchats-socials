@@ -1,4 +1,4 @@
-ï»¿<template>
+<template>
   <div class="flex flex-col gap-4">
     <div class="pt-2 border-t border-neutral-line">
       <h4 class="text-neutral-primary">Variants and media</h4>
@@ -69,14 +69,7 @@
           class="relative border border-neutral-line rounded-xl overflow-hidden bg-neutral-muted"
         >
           <img :src="img.url" alt="" class="w-full h-20 object-cover" />
-          <button
-            type="button"
-            class="absolute top-2 right-2 w-7 h-7 rounded-lg bg-neutral-surface/90 border border-neutral-line flex items-center justify-center text-neutral-secondary hover:bg-neutral-muted"
-            aria-label="Remove image"
-            @click="removeImage(img.id)"
-          >
-            <BaseCustomIcon name="cancel-red" customClass="w-4 h-4" />
-          </button>
+          <CommonButton aria-label="Remove image" type="button" title="" bgColor="absolute top-2 right-2 bg-neutral-surface/90 border border-neutral-line hover:bg-neutral-muted !h-7 !w-7 !px-0" textColor="text-neutral-secondary" createIcon="cancel-red" @click="removeImage(img.id)" />
         </div>
 
         <div
@@ -107,7 +100,7 @@
             <div class="min-w-0">
               <p class="body-small text-neutral-primary font-semibold truncate">{{ productForm.name || 'Product name' }}</p>
               <p class="body-xsmall text-neutral-secondary truncate">
-                {{ categoryLabel || 'Category' }} Â· {{ priceLabel || 'â‚¬0.00' }}
+                {{ categoryLabel || 'Category' }} · {{ priceLabel || '€0.00' }}
               </p>
             </div>
           </div>
@@ -197,3 +190,4 @@ const removeImage = (id) => {
   onValidate('images')
 }
 </script>
+
