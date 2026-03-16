@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <header class="h-[72px] bg-neutral-surface border-b border-neutral-line px-6 flex items-center justify-between">
     <!-- Left -->
     <div class="flex items-center gap-3 min-w-0">
@@ -22,11 +22,65 @@
     <div class="flex items-center gap-4">
       <button
         type="button"
-        class=" p-3 rounded-lg bg-primary-50 flex items-center justify-center text-primary-400 hover:bg-neutral-muted"
+        class="p-3 rounded-lg bg-primary-50 flex items-center justify-center text-primary-400 hover:bg-neutral-muted"
         aria-label="Notifications"
+        aria-haspopup="true"
+        aria-controls="notifications_panel"
+        @click="toggleNotifications"
       >
         <BaseCustomIcon name="bell" customClass="" />
       </button>
+
+      <OverlayPanel ref="notificationsRef" id="notifications_panel" :popup="true" class="w-[360px] rounded-2xl">
+        <div class="flex items-center px-4 py-3 bg-neutral-surface border-b border-neutral-100">
+          <CommonButton
+            aria-label="Close"
+            type="button"
+            title=""
+            bgColor="bg-transparent hover:bg-neutral-muted !h-10 !w-10 !px-0"
+            textColor="text-neutral-primary"
+            createIcon="cancel-red"
+            @click="toggleNotifications"
+          />
+          <p class="mx-auto button text-neutral-primary">Notifications</p>
+          <CommonButton
+            v-if="notifications.length"
+            aria-label="Clear notifications"
+            type="button"
+            title=""
+            bgColor="bg-transparent hover:bg-neutral-muted !h-10 !w-10 !px-0"
+            textColor="text-danger-300"
+            createIcon="trash"
+            @click="clearNotifications"
+          />
+          <div v-else class="w-10" aria-hidden="true" />
+        </div>
+
+        <div class="max-h-[520px] overflow-auto">
+          <div v-if="!notifications.length" class="p-6">
+            <p class="body-small text-neutral-secondary">No notifications yet.</p>
+          </div>
+
+          <button
+            v-for="n in notifications"
+            :key="n.id"
+            type="button"
+            class="w-full text-left flex items-start gap-3 px-4 py-4 border-b border-neutral-100 hover:bg-neutral-muted"
+            @click="markAsRead(n.id)"
+          >
+            <div class="w-9 h-9 rounded-xl bg-neutral-background border border-neutral-line flex items-center justify-center text-primary-400">
+              <BaseCustomIcon :name="n.icon" customClass="" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="body-small text-neutral-primary">{{ n.message }}</p>
+              <p class="body-xsmall text-neutral-secondary">{{ n.time }}</p>
+            </div>
+
+            <span v-if="n.unread" class="w-2 h-2 rounded-full bg-danger-300 mt-2" aria-hidden="true" />
+          </button>
+        </div>
+      </OverlayPanel>
 
       <button
         type="button"
@@ -58,10 +112,10 @@
               class="flex items-center justify-between"
               @click="(navigate(), (menuOpen = false))"
             >
-              <span class="ml-2 body-xsmall">{{ item.label }}</span>
               <div class="w-4 text-primary-400">
                 <BaseCustomIcon :name="item.icon" />
               </div>
+              <span class="ml-2 body-xsmall">{{ item.label }}</span>
             </a>
           </router-link>
 
@@ -137,6 +191,67 @@ const { user, token } = storeToRefs(userDetailsStore)
 const menuRef = ref()
 const menuOpen = ref(false)
 const logoutModal = ref(false)
+const notificationsRef = ref(null)
+
+const notifications = ref([
+  {
+    id: 'n-1',
+    icon: 'logistics',
+    message: 'Shipment created for order #123456.',
+    time: '2 mins ago',
+    unread: true
+  },
+  {
+    id: 'n-2',
+    icon: 'inventory',
+    message: '#123456 is running low on stock.',
+    time: '2 mins ago',
+    unread: true
+  },
+  {
+    id: 'n-3',
+    icon: 'logistics',
+    message: 'Shipment created for order #{order_id}.',
+    time: '2 mins ago',
+    unread: true
+  },
+  {
+    id: 'n-4',
+    icon: 'complaints',
+    message: 'A customer complaint was detected.',
+    time: '2 mins ago',
+    unread: true
+  },
+  {
+    id: 'n-5',
+    icon: 'logistics',
+    message: 'Shipment created for order #{order_id}.',
+    time: '2 mins ago',
+    unread: true
+  },
+  {
+    id: 'n-6',
+    icon: 'logistics',
+    message: 'Shipment created for order #{order_id}.',
+    time: '2 mins ago',
+    unread: true
+  }
+])
+
+const toggleNotifications = (event) => {
+  notificationsRef.value?.toggle(event)
+}
+
+const clearNotifications = () => {
+  notifications.value = []
+  notificationsRef.value?.hide()
+}
+
+const markAsRead = (id) => {
+  notifications.value = notifications.value.map((n) =>
+    n.id === id ? { ...n, unread: false } : n
+  )
+}
 
 const displayName = computed(() => {
   return user.value?.name || user.value?.full_name || 'Jane Doe'
@@ -158,7 +273,7 @@ const showBack = computed(() => {
 
 const menuItems = ref([
   {
-    label: 'Profile',
+    label: 'Profile Information',
     icon: 'users',
     route: '/profile'
   },

@@ -148,71 +148,47 @@
       <Sidebar
         v-model:visible="deliveryEditorOpen"
         position="right"
+        :style="{ maxWidth: '400px', width: '100%' }"
+        modal
+        class="custom-modal-drawer rounded-tl-lg rounded-bl-lg"
         :showCloseIcon="false"
-        class="w-full sm:w-[420px]"
+        :show-header="false"
       >
-        <template #header>
-          <div class="w-full flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3 min-w-0">
-              <div
-                class="w-10 h-10 rounded-xl bg-info-50 text-info-300 flex items-center justify-center shrink-0"
-                aria-hidden="true"
-              >
-                <BaseCustomIcon name="logistics" customClass="w-5 h-5" />
-              </div>
-              <div class="min-w-0">
-                <h4 class="text-neutral-primary">Delivery Price</h4>
-                <p class="body-small text-neutral-secondary truncate">
-                  Set price for delivery location
-                </p>
-              </div>
+        <div class="w-full flex items-start justify-between gap-3 p-6">
+          <div class="flex items-start gap-3 min-w-0">
+            <div
+              class="p-2 rounded-xl bg-neutral-background border border-neutral-line flex items-center justify-center text-neutral-primary"
+              aria-hidden="true"
+            >
+              <BaseCustomIcon name="logistics" customClass="" />
             </div>
-
-            <CommonButton
-              aria-label="Close"
-              type="button"
-              title=""
-              bgColor="bg-transparent hover:bg-neutral-muted !h-10 !w-10 !px-0"
-              textColor="text-neutral-secondary"
-              createIcon="cancel-red"
-              @click="deliveryEditorOpen = false"
-            />
-          </div>
-        </template>
-
-        <div class="flex flex-col h-full">
-          <div class="flex flex-col gap-2">
-            <p class="label text-neutral-primary">Delivery Price</p>
-            <FormText
-              v-model="deliveryDraftAmount"
-              inputId="delivery-price"
-              name="delivery_price"
-              type="number"
-              :placeholder="
-                selectedDeliveryPrice ? selectedDeliveryPrice.currency + '0.00' : '0.00'
-              "
-            />
-          </div>
-
-          <div class="mt-auto pt-6 border-t border-neutral-line">
-            <div class="flex items-center gap-4">
-              <CommonButton
-                title="Cancel"
-                type="button"
-                bgColor="bg-neutral-muted hover:bg-neutral-line !h-12 rounded-xl flex-1"
-                textColor="text-neutral-primary button"
-                @click="deliveryEditorOpen = false"
-              />
-              <CommonButton
-                title="Save"
-                type="button"
-                bgColor="bg-primary-300 hover:bg-primary-400 !h-12 rounded-xl flex-1"
-                textColor="text-neutral-inverted button"
-                @click="saveDeliveryPrice"
-              />
+            <div class="flex flex-col min-w-0">
+              <h4 class="text-neutral-primary">Delivery Price</h4>
+              <p class="body-small text-neutral-secondary truncate">
+                Set price for {{ selectedDeliveryPrice?.location || 'delivery location' }}
+              </p>
             </div>
           </div>
+
+          <CommonButton
+            aria-label="Close"
+            type="button"
+            title=""
+            bgColor="bg-transparent hover:bg-neutral-muted !h-10 !w-10 !px-0"
+            textColor="text-neutral-secondary"
+            createIcon="cancel-red"
+            @click="closeDeliveryEditor"
+          />
         </div>
+
+        <DeliveryPriceSidebarBody
+          :deliveryPriceForm="deliveryPriceForm"
+          :errors="deliveryPriceErrors"
+          :currency="selectedDeliveryPrice?.currency || ''"
+          :validateField="validateDeliveryPriceField"
+          @cancel="closeDeliveryEditor"
+          @save="saveDeliveryPrice"
+        />
       </Sidebar>
     </section>
 
@@ -280,8 +256,10 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import Joi from 'joi'
+import { computed, reactive, ref, watch } from 'vue'
 import FormText from '~/components/common/input/FormText.vue'
+import DeliveryPriceSidebarBody from '~/components/settings/DeliveryPriceSidebarBody.vue'
 import { useUserDetailsStore } from '~/store/userDetailsStore'
 
 definePageMeta({
@@ -361,29 +339,74 @@ const deliveryPrices = ref([
 
 const deliveryEditorOpen = ref(false)
 const selectedDeliveryPrice = ref(null)
-const deliveryDraftAmount = ref('')
+
+const deliveryPriceForm = reactive({
+  amount: ''
+})
+
+const deliveryPriceErrors = ref({})
+const deliveryPriceValidationSchema = {
+  amount: Joi.number().min(0).empty('').required().messages({
+    'any.required': 'Delivery price is required',
+    'number.base': 'Enter a valid delivery price',
+    'number.min': 'Delivery price cannot be negative'
+  })
+}
+
+const validateDeliveryPriceField = (field) => {
+  const rule = deliveryPriceValidationSchema[field]
+  if (!rule) return
+
+  const valueMap = {
+    amount: deliveryPriceForm.amount
+  }
+
+  const result = rule.validate(valueMap[field])
+
+  if (result.error) {
+    deliveryPriceErrors.value[field] = result.error.details[0].message
+    return
+  }
+
+  delete deliveryPriceErrors.value[field]
+}
+
+const validateDeliveryPriceForm = () => {
+  const keys = Object.keys(deliveryPriceValidationSchema)
+  keys.forEach((field) => validateDeliveryPriceField(field))
+  return keys.every((field) => !deliveryPriceErrors.value[field])
+}
+
+const closeDeliveryEditor = () => {
+  deliveryEditorOpen.value = false
+  selectedDeliveryPrice.value = null
+  deliveryPriceForm.amount = ''
+  deliveryPriceErrors.value = {}
+}
 
 const openDeliveryEditor = (price) => {
   selectedDeliveryPrice.value = price
-  deliveryDraftAmount.value = String(price?.amount ?? '')
+  deliveryPriceErrors.value = {}
+  deliveryPriceForm.amount = String(price?.amount ?? '')
   deliveryEditorOpen.value = true
 }
 
 const saveDeliveryPrice = () => {
   if (!selectedDeliveryPrice.value) {
-    deliveryEditorOpen.value = false
+    closeDeliveryEditor()
     return
   }
 
-  const parsed = Number(deliveryDraftAmount.value)
+  if (!validateDeliveryPriceForm()) return
+
+  const parsed = Number(deliveryPriceForm.amount)
   if (Number.isNaN(parsed)) return
 
   deliveryPrices.value = deliveryPrices.value.map((p) =>
     p.id === selectedDeliveryPrice.value.id ? { ...p, amount: parsed } : p
   )
 
-  selectedDeliveryPrice.value = null
-  deliveryEditorOpen.value = false
+  closeDeliveryEditor()
 }
 
 const formatMoney = (amount) => {
@@ -413,6 +436,7 @@ const removeFaq = (id) => {
   faqs.value = faqs.value.filter((row) => row.id !== id)
 }
 </script>
+
 
 
 

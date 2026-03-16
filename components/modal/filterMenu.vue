@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <OverlayPanel ref="op" id="overlay_menu" :popup="true" class="w-[240px] rounded-lg">
     <div class="flex items-center px-4 py-[10px] bg-neutral-surface border-b border-neutral-100">
       <CommonButton
@@ -10,7 +10,7 @@
         createIcon="cancel-red"
         @click="toggle"
       />
-      <p class="mx-auto button text-neutral-text_primary">Filter</p>
+      <p class="mx-auto button text-neutral-text_primary">Filter by</p>
     </div>
 
     <div class="p-4">
@@ -35,7 +35,24 @@
           @change="handleSelectChange(index)"
         />
 
-        <div v-if="item.hasDates" class="flex items-center gap-2">
+        <div v-else-if="item.hasPrices" class="flex items-center gap-2">
+          <InputText
+            v-model="selectedValues[index].minPrice"
+            inputmode="decimal"
+            placeholder="â‚¬0.0"
+            class="!h-10 shadow-none w-full"
+            @update:modelValue="updatePriceValue(index, 'minPrice', $event)"
+          />
+          <InputText
+            v-model="selectedValues[index].maxPrice"
+            inputmode="decimal"
+            placeholder="â‚¬0.0"
+            class="!h-10 shadow-none w-full"
+            @update:modelValue="updatePriceValue(index, 'maxPrice', $event)"
+          />
+        </div>
+
+        <div v-else-if="item.hasDates" class="flex items-center gap-2">
           <DatePicker
             v-model="selectedValues[index].fromDate"
             class="!h-10 shadow-none w-full"
@@ -94,9 +111,11 @@ const isLoading = ref(false)
 watch(
   () => props.items,
   (newItems) => {
-    selectedValues.value = newItems.map((item) =>
-      item.hasDates ? { fromDate: null, toDate: null } : null
-    )
+    selectedValues.value = newItems.map((item) => {
+      if (item.hasDates) return { fromDate: null, toDate: null }
+      if (item.hasPrices) return { minPrice: null, maxPrice: null }
+      return null
+    })
   },
   { immediate: true }
 )
@@ -113,15 +132,35 @@ const updateDateValue = (index, key, value) => {
   selectedValues.value[index][key] = value
 }
 
+const updatePriceValue = (index, key, value) => {
+  if (!selectedValues.value[index]) {
+    selectedValues.value[index] = { minPrice: null, maxPrice: null }
+  }
+  selectedValues.value[index][key] = value
+}
+
 const handleClear = (index) => {
   const item = props.items[index]
-  selectedValues.value[index] = item.hasDates ? { fromDate: null, toDate: null } : null
+  if (item.hasDates) {
+    selectedValues.value[index] = { fromDate: null, toDate: null }
+    return
+  }
+
+  if (item.hasPrices) {
+    selectedValues.value[index] = { minPrice: null, maxPrice: null }
+    return
+  }
+
+  selectedValues.value[index] = null
 }
 
 const resetModal = () => {
-  selectedValues.value = props.items.map((item) =>
-    item.hasDates ? { fromDate: null, toDate: null } : null
-  )
+  selectedValues.value = props.items.map((item) => {
+    if (item.hasDates) return { fromDate: null, toDate: null }
+    if (item.hasPrices) return { minPrice: null, maxPrice: null }
+    return null
+  })
+
   emit('reset')
   op.value.hide()
 }

@@ -120,7 +120,7 @@
               :class="platformPillClass(slotProps.data.platform)"
               aria-hidden="true"
             >
-              <BaseCustomIcon :name="platformIcon(slotProps.data.platform)" customClass="w-3.5 h-3.5" />
+              <BaseCustomIcon :name="platformIcon(slotProps.data.platform)" />
             </span>
             <p class="body-small text-neutral-primary">{{ platformLabel(slotProps.data.platform) }}</p>
           </div>
@@ -171,7 +171,7 @@
             @click.prevent="onRowMenuCommand(item)"
           >
             <span class="ml-2 body-xsmall text-neutral-primary">{{ item.label }}</span>
-            <div class="w-4 text-neutral-secondary"><BaseCustomIcon :name="item.icon" /></div>
+            <div class="w-4" :class="item.style"><BaseCustomIcon :name="item.icon" /></div>
           </a>
         </template>
       </Menu>
@@ -483,8 +483,8 @@ const rowMenuItems = computed(() => {
   const isPaused = status === 'paused'
 
   const toggleItem = isPaused
-    ? { label: 'Active Conversation', icon: 'conversations', action: 'activate' }
-    : { label: 'Pause Conversation', icon: 'not_disturb', action: 'pause' }
+    ? { label: 'Active Conversation', icon: 'conversations', action: 'activate', style: 'text-success-300' }
+    : { label: 'Pause Conversation', icon: 'conversations', action: 'pause', style: 'text-warning-200' }
 
   return [
     { label: 'View Conversation', icon: 'eye', action: 'view' },
