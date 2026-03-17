@@ -5,6 +5,7 @@
 - pages/products/index.vue
 - pages/products/add.vue
 - pages/products/[id].vue
+- pages/products/[id]/edit.vue
 
 ## Components
 

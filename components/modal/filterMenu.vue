@@ -1,26 +1,28 @@
-<template>
-  <OverlayPanel ref="op" id="overlay_menu" :popup="true" class="w-[240px] rounded-lg">
-    <div class="flex items-center px-4 py-[10px] bg-neutral-surface border-b border-neutral-100">
+﻿<template>
+  <OverlayPanel
+    ref="op"
+    id="overlay_menu"
+    :popup="true"
+    class="w-[280px] rounded-2xl border border-neutral-line"
+  >
+    <div class="flex items-center px-4 py-3 bg-neutral-surface border-b border-neutral-line">
       <CommonButton
         aria-label="Close"
         type="button"
         title=""
         bgColor="bg-transparent hover:bg-primary-50 !h-10 !w-10 !px-0"
-        textColor="text-neutral-text_primary"
+        textColor="text-neutral-primary"
         createIcon="cancel-red"
         @click="toggle"
       />
-      <p class="mx-auto button text-neutral-text_primary">Filter by</p>
+      <p class="mx-auto button text-neutral-primary">Filter by</p>
     </div>
 
     <div class="p-4">
       <div v-for="(item, index) in items" :key="index" class="mb-4">
         <div class="flex justify-between items-center mb-2">
-          <label class="body-small text-neutral-text_primary">{{ item.label }}</label>
-          <p
-            class="body-small text-primary-300 cursor-pointer hover:underline"
-            @click="handleClear(index)"
-          >
+          <label class="body-small text-neutral-secondary">{{ item.label }}</label>
+          <p class="body-small text-primary-300 cursor-pointer hover:underline" @click="handleClear(index)">
             Clear
           </p>
         </div>
@@ -30,24 +32,31 @@
           v-model="selectedValues[index]"
           :options="item.options"
           placeholder="Select"
-          class="h-[36px]"
+          class="!h-12"
           name="field"
           @change="handleSelectChange(index)"
+        />
+
+        <DatePicker
+          v-else-if="item.hasDate"
+          v-model="selectedValues[index]"
+          class="!h-12 shadow-none w-full"
+          placeholder="Select"
         />
 
         <div v-else-if="item.hasPrices" class="flex items-center gap-2">
           <InputText
             v-model="selectedValues[index].minPrice"
             inputmode="decimal"
-            placeholder="â‚¬0.0"
-            class="!h-10 shadow-none w-full"
+            placeholder="€0.0"
+            class="!h-12 shadow-none w-full"
             @update:modelValue="updatePriceValue(index, 'minPrice', $event)"
           />
           <InputText
             v-model="selectedValues[index].maxPrice"
             inputmode="decimal"
-            placeholder="â‚¬0.0"
-            class="!h-10 shadow-none w-full"
+            placeholder="€0.0"
+            class="!h-12 shadow-none w-full"
             @update:modelValue="updatePriceValue(index, 'maxPrice', $event)"
           />
         </div>
@@ -55,32 +64,32 @@
         <div v-else-if="item.hasDates" class="flex items-center gap-2">
           <DatePicker
             v-model="selectedValues[index].fromDate"
-            class="!h-10 shadow-none w-full"
+            class="!h-12 shadow-none w-full"
             placeholder="From"
             @update:modelValue="updateDateValue(index, 'fromDate', $event)"
           />
           <DatePicker
             v-model="selectedValues[index].toDate"
-            class="!h-10 shadow-none w-full"
+            class="!h-12 shadow-none w-full"
             placeholder="To"
             @update:modelValue="updateDateValue(index, 'toDate', $event)"
           />
         </div>
       </div>
 
-      <div class="flex items-center gap-4 pt-4 border-t border-neutral-100">
+      <div class="flex items-center gap-4 pt-4 border-t border-neutral-line">
         <CommonButton
           title="Reset"
-          bgColor="bg-neutral-muted !h-8"
-          textColor="text-neutral-text_primary button"
+          bgColor="bg-neutral-muted !h-10"
+          textColor="text-neutral-primary button"
           type="button"
           class="w-full"
           @click="resetModal"
         />
         <CommonButton
           title="Apply"
-          bgColor="bg-primary-300 !h-8"
-          textColor="text-white button"
+          bgColor="bg-primary-300 !h-10"
+          textColor="text-neutral-inverted button"
           type="button"
           class="w-full"
           :loading="isLoading"
@@ -174,3 +183,4 @@ const handleSelectChange = () => {}
 
 defineExpose({ toggle })
 </script>
+

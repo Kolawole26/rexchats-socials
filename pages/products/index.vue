@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="flex flex-col gap-6">
     <section class="bg-neutral-surface border border-neutral-line rounded-2xl p-6">
       <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
@@ -60,7 +60,7 @@
           :status="product.status"
           :price="product.price"
           :variant-count="product.variantCount"
-          @edit="goToProduct(product.id)"
+          @edit="goToEdit(product.id)"
         />
       </div>
 
@@ -340,5 +340,9 @@ const goToAddProduct = () => {
 
 const goToProduct = (id) => {
   router.push('/products/' + String(id))
+}
+
+const goToEdit = (id) => {
+  router.push('/products/' + String(id) + '/edit')
 }
 </script>

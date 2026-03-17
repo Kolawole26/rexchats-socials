@@ -114,7 +114,7 @@
           v-if="isVendor"
           type="button"
           class="flex items-start justify-between gap-4 py-4 border-b border-neutral-line w-full text-left"
-          @click="deleteAccountModal = true"
+          @click="requestDeleteAccount"
         >
           <div class="flex flex-col gap-1">
             <div class="flex items-center gap-2">
@@ -206,18 +206,6 @@
       />
     </Sidebar>
 
-    <ModalConfirmation
-      :isOpen="deleteAccountModal"
-      title="Delete Account"
-      confirmationMessage="Are you sure you want to delete your account?"
-      informationText="This action cannot be undone."
-      actionButtonText="Delete"
-      actionButtonClass="bg-danger-300 hover:bg-danger-400"
-      :requireReason="false"
-      btnIcon=""
-      @close="deleteAccountModal = false"
-      @confirm="confirmDeleteAccount"
-    />
   </section>
 </template>
 
@@ -234,6 +222,8 @@ definePageMeta({
 
 const userStore = useUserDetailsStore()
 
+
+const { open: openConfirmation } = useConfirmationModal()
 const rawUser = computed(() => userStore?.user?.value ?? userStore?.user ?? {})
 
 const role = computed(() => {
@@ -292,7 +282,6 @@ const initials = computed(() => {
 
 const descriptionSidebarOpen = ref(false)
 const passwordSidebarOpen = ref(false)
-const deleteAccountModal = ref(false)
 
 const descriptionForm = reactive({
   description: ''
@@ -425,8 +414,25 @@ const savePassword = () => {
   closePasswordSidebar()
 }
 
-const confirmDeleteAccount = () => {
-  deleteAccountModal.value = false
+const requestDeleteAccount = () => {
+  openConfirmation({
+    title: 'Delete your account',
+    confirmationMessage: 'You are about to delete your account',
+    informationText: 'This action cannot be undone.',
+    icon: 'trash',
+    iconWrapperClass: 'text-danger-300 bg-transparent',
+    actionButtonText: 'Delete',
+    cancelButtonText: 'Cancel',
+    actionButtonClass: 'bg-danger-300 hover:bg-danger-400',
+    requireReason: false,
+    onConfirm: () => confirmDeleteAccount()
+  })
 }
+
+const confirmDeleteAccount = () => {
+  // integrate API delete when available
+}
+
 </script>
+
 

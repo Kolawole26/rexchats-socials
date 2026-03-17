@@ -66,7 +66,7 @@
         <div class="flex items-center justify-between px-3">
           <div v-if="!collapsed" class="flex items-center gap-3 text-primary-400">
             <BaseCustomIcon name="theme" customClass="" />
-            <span class="text-sm font-medium">Theme</span>
+            <span class="label font-medium">Theme</span>
           </div>
 
           <div
@@ -116,7 +116,7 @@
           <button
             type="button"
             class=" rounded-lg flex items-center justify-center text-primary-400 hover:bg-neutral-muted"
-            @click="logoutModal = true"
+            @click="requestLogout"
             aria-label="Logout"
           >
             <BaseCustomIcon name="logout" customClass="" />
@@ -124,27 +124,13 @@
         </div>
 
         <div v-else class="flex justify-center">
-          <div class="w-14 h-14 rounded-2xl bg-primary-300 text-neutral-inverted flex items-center justify-center font-semibold text-lg">
+          <div class="w-14 h-14 rounded-2xl bg-primary-300 text-neutral-inverted flex items-center justify-center font-semibold body-large">
             {{ initials }}
           </div>
         </div>
       </div>
     </div>
-
-    <ModalConfirmation
-      :isOpen="logoutModal"
-      title="Log Out"
-      confirmationMessage="Are you sure you want to logout?"
-      informationText="You will need to login again to continue."
-      actionButtonText="Log Out"
-      actionButtonClass="bg-danger-300 hover:bg-danger-400"
-      :requireReason="false"
-      btnIcon=""
-      @close="logoutModal = false"
-      @confirm="handleLogout"
-    />
-  </aside>
-</template>
+\n  </aside>\n</template>\n
 
 <script setup>
 import { computed, ref, onMounted } from 'vue'
@@ -167,7 +153,8 @@ const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
 const { user, token } = storeToRefs(userDetailsStore)
 
-const logoutModal = ref(false)
+
+const { open: openConfirmation } = useConfirmationModal()
 
 const navGroups = ref([
   {
@@ -263,6 +250,21 @@ onMounted(() => {
   setTheme(prefersDark ? 'dark' : 'light')
 })
 
+const requestLogout = () => {
+  openConfirmation({
+    title: 'You are about to log out',
+    confirmationMessage: '',
+    informationText: 'Your current session will be closed. To access the platform again, you\'ll need to log in.',
+    icon: 'logout',
+    iconWrapperClass: 'text-danger-300 bg-transparent',
+    actionButtonText: 'Log out',
+    cancelButtonText: 'Cancel',
+    actionButtonClass: 'bg-danger-300 hover:bg-danger-400',
+    requireReason: false,
+    onConfirm: () => handleLogout()
+  })
+}
+
 const handleLogout = () => {
   token.value = ''
   user.value = {}
@@ -273,8 +275,10 @@ const handleLogout = () => {
     if (theme) localStorage.setItem('color-theme', theme)
   }
 
-  logoutModal.value = false
   router.push('/login')
 }
 </script>
+
+
+
 

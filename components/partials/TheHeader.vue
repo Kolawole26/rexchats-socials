@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <header class="h-[72px] bg-neutral-surface border-b border-neutral-line px-6 flex items-center justify-between">
     <!-- Left -->
     <div class="flex items-center gap-3 min-w-0">
@@ -135,18 +135,8 @@
         </template>
       </Menu>
 
-      <ModalConfirmation
-        :isOpen="logoutModal"
-        title="Log Out"
-        confirmationMessage="Are you sure you want to logout?"
-        informationText="You will need to login again to continue."
-        actionButtonText="Log Out"
-        actionButtonClass="bg-danger-300 hover:bg-danger-400"
-        :requireReason="false"
-        btnIcon=""
-        @close="logoutModal = false"
-        @confirm="handleLogout"
-      />
+      <ModalConfirmationForwarder />
+
     </div>
   </header>
 </template>
@@ -188,9 +178,10 @@ const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
 const { user, token } = storeToRefs(userDetailsStore)
 
+
+const { open: openConfirmation } = useConfirmationModal()
 const menuRef = ref()
 const menuOpen = ref(false)
-const logoutModal = ref(false)
 const notificationsRef = ref(null)
 
 const notifications = ref([
@@ -281,7 +272,18 @@ const menuItems = ref([
     label: 'Sign Out',
     icon: 'logout',
     command: () => {
-      logoutModal.value = true
+      openConfirmation({
+        title: 'You are about to log out',
+        confirmationMessage: '',
+        informationText: 'Your current session will be closed. To access the platform again, you\'ll need to log in.',
+        icon: 'logout',
+        iconWrapperClass: 'text-danger-300 bg-transparent',
+        actionButtonText: 'Log out',
+        cancelButtonText: 'Cancel',
+        actionButtonClass: 'bg-danger-300 hover:bg-danger-400',
+        requireReason: false,
+        onConfirm: () => handleLogout()
+      })
     }
   }
 ])
@@ -310,7 +312,6 @@ const handleLogout = () => {
     if (theme) localStorage.setItem('color-theme', theme)
   }
 
-  logoutModal.value = false
   router.push('/login')
 }
 </script>
@@ -320,3 +321,4 @@ const handleLogout = () => {
   @apply !min-w-[160px];
 }
 </style>
+

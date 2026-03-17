@@ -234,10 +234,11 @@ const product = reactive({
 })
 
 const goToEdit = () => {
-  router.push('/products/add')
+  router.push('/products/' + String(product.id) + '/edit')
 }
 
 const onDelete = () => {
   router.push('/products')
 }
 </script>
+
